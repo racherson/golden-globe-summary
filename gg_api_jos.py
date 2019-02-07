@@ -118,7 +118,7 @@ def main():
     tweets = load_data('processed_gg2013.json')
     nlp = spacy.load('en_core_web_sm', disable=['tagger', 'parser'])
     tweets = nlp.pipe(tweets)
-    n = 100000 # limit number of tweets we search, 2015 has 1.7 million
+    n = 100000 # limit number of tweets we search, 2015 has 1.7 million, with 100000 the process takes about 2 mins
     for tweet in tweets:
         tokens = []
         ignore_flag = False
