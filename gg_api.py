@@ -18,6 +18,7 @@ tokenizer = Tokenizer(nlp.vocab)
 OFFICIAL_AWARDS = ['cecil b. demille award', 'best motion picture - drama', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best motion picture - comedy or musical', 'best performance by an actress in a motion picture - comedy or musical', 'best performance by an actor in a motion picture - comedy or musical', 'best animated feature film', 'best foreign language film', 'best performance by an actress in a supporting role in a motion picture', 'best performance by an actor in a supporting role in a motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best television series - comedy or musical', 'best performance by an actress in a television series - comedy or musical', 'best performance by an actor in a television series - comedy or musical', 'best mini-series or motion picture made for television', 'best performance by an actress in a mini-series or motion picture made for television', 'best performance by an actor in a mini-series or motion picture made for television', 'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television', 'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
 
 tweets = {}
+awards_tweets = []
 hosts = []
 awards = []
 nominees = {}
@@ -73,11 +74,10 @@ def pre_ceremony():
     global tweets
     # names = {}
     # docs = []
-    start_time = time.time()
     tweets_2013 = load_data('gg2013.json')
     pprint(tweets_2013[1])
-    tweets[2013]=tweets_2013
     tweets_2013 = extract_text(tweets_2013)
+    tweets[2013]=tweets_2013
     with open('processed_gg2013.json', 'w') as f:
         json.dump(tweets_2013, f)
     # gen, ner = parse_text(tweets_2013)
@@ -96,9 +96,6 @@ def pre_ceremony():
     #         del names[k]
     # print(docs[1])
     # print(names)
-    end_time = time.time()
-    print('Time', str(end_time - start_time))
-    print("Pre-ceremony processing complete.")
     return
 
 
@@ -110,62 +107,87 @@ def load_data(file_name):
         tweets = json.load(f)
     return tweets
 
-
+# return True if we want to append token
+# return False
 def token_filter(token):
-    return not (token.is_punct | token.is_space | token.is_stop | len(token.text) <= 3 | '@' not in token.text)
+    return not (token.is_punct or token.is_space or token.is_stop or len(token.text) <= 3 or '@' in token.text or '#' in token.text)
+
+
+def ent_filter(ent):
+    return not (ent.text in custom_stop_words or '@' in ent.text or '#' in ent.text)
 
 
 def extract_text(tweets):
     tweet_text = []
     filtered_tweets = copy.deepcopy(tweets)
     for tweet in filtered_tweets:
-         tweet_text.append(tweet['text'])
+        if tweet['text'][0:2].lower() != 'rt':
+            tweet_text.append(tweet['text'])
     return tweet_text
 
 
 def parse_text(tweets):
-    spacy_tweets = []
     spacy_tweets = tokenizer.pipe(tweets)
     ner = nernlp.pipe(tweets)
     return spacy_tweets, ner
 
 
 def main():
-    for w in custom_stop_words:
-        nlp.vocab[w].is_stop = True
     '''This function calls your program. Typing "python gg_api.py"
     will run this function. Or, in the interpreter, import gg_api
     and then run gg_api.main(). This is the second thing the TA will
     run when grading. Do NOT change the name of this function or
     what it returns.'''
+    global tweets
+    global hosts
+    global awards
+    global awards_tweets
+
+    for w in custom_stop_words:
+        nlp.vocab[w].is_stop = True
     pre_ceremony()
-    tweets, ner = parse_text(tweets[2013])
-    n = 100000 # limit number of tweets we search
-    for tweet in tweets:
+
+    # tweets_2013, ner = parse_text(tweets[2013])
+    start_time = time.time()
+    data = load_data('processed_gg2013.json')
+    tweets[2013] = nernlp.pipe(data)
+    n = 100000  # limit number of tweets we search
+    for tweet in tweets[2013]:
         tokens = []
         next_flag = False
         should_flag = False
         for token in tweet:
             t = token.text.lower()
-            if t == 'next': # ignore tweets about next year
-              	next_flag = True
-            if t == 'should': # ignore opinion tweets
+            if t == 'next':  # ignore tweets about next year
+                next_flag = True
+            if t == 'should':  # ignore opinion tweets
                 should_flag = True
                 continue
             if not token_filter(token):
                 continue
             tokens.append(token.lemma_.lower())
         for token in tokens:
-            if token == 'host' and not (next_flag and should_flag):
-                for ent in tweet.ents:
-                    if token_filter(ent, False):
-                        hosts.append(ent.text.lower())
-                pprint(tweet)
-                break # maybe remove?
-            # awards checking, maybe use hunter's names collection to try and do awards idk
+            # if token == 'host' and not (next_flag and should_flag):
+            #     for ent in tweet.ents:
+            #         if ent_filter(ent):
+            #             hosts.append(ent.text.lower())
+            #     pprint(tweet)
+            # awards checking
+            if token == 'best':
+                awards_tweets.append(tweet)
+                break # just for performance while developing
         if n == 0:
             break
         n -= 1
+    # unique_hosts = sorted(set(hosts), key=hosts.count)
+    # counts = [hosts.count(host) for host in unique_hosts]
+    # pprint(list(zip(unique_hosts, counts)))  # print our sorted list of potential hosts + mentions
+    for award_tweet in awards_tweets:
+      pprint(award_tweet.text)
+
+    end_time = time.time()
+    print('Time', str(end_time - start_time))
+    print("Pre-ceremony processing complete.")
     return
 
 
