@@ -27,6 +27,30 @@ winners = {}
 presenters = {}
 
 
+def get_first_and_last(index):
+    global host_counts
+    index_name = host_counts[index][0].split(' ')
+    if len(index_name) >= 2:
+        return host_counts[index][0]
+    else:
+        found_last_name = False
+        curr_index = index - 1
+        count = 1
+        while not found_last_name and count <= 20:
+            next_name = host_counts[curr_index][0].split(' ')
+            if next_name[0] == index_name[0]:
+                # use it
+                found_last_name = True
+            else:
+                # move on to next index
+                curr_index -= 1
+                count += 1
+        if found_last_name:  # if we found a last name in that count range
+            return host_counts[curr_index][0]
+        else:  # if we did not find a last name in that count range, return the original
+            return host_counts[index][0]
+
+
 def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
     of this function or what it returns.'''
@@ -34,9 +58,12 @@ def get_hosts(year):
     global host_counts
 
     # last element in host_counts has largest count since sorted
-    hosts.append(host_counts[-1][0])
+    # hosts.append(host_counts[-1][0])
+
     first_name = host_counts[-1][0].split(' ')[0]
     first_host_count = host_counts[-1][1]
+    hosts.append(get_first_and_last(-1))  # make sure to find the first and last name of this host
+
     # if the second highest is not the same first name and within a percentage, add it too
     index = -2
     percent_and_similar = True
@@ -46,7 +73,8 @@ def get_hosts(year):
         if percent < 0.6:
             break
         if first_and_last[0] != first_name and percent > 0.6:
-            hosts.append(host_counts[index][0])
+            # hosts.append(host_counts[index][0])
+            hosts.append(get_first_and_last(index))
             percent_and_similar = False
         else:
             index -= 1
