@@ -11,8 +11,7 @@ from difflib import SequenceMatcher
 nlp = spacy.load('en_core_web_sm')
 nernlp = spacy.load('en_core_web_sm', disable=['parser', 'tagger'])
 custom_stop_words = [
-        'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg'
-    ]
+        'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg']
 from spacy.tokenizer import Tokenizer
 tokenizer = Tokenizer(nlp.vocab)
 
@@ -165,7 +164,8 @@ def pre_ceremony():
     # gen, ner = parse_text(tweets_2013)
     # for doc in ner:
     #     for ent in doc.ents:
-    #         if (ent.text not in custom_stop_words) and (ent.text not in names) and 'http' not in ent.text and 'RT' not in ent.text and '@' not in ent.text and '#' not in ent.text:
+    #         if (ent.text not in custom_stop_words) and (ent.text not in names) and 'http' not in ent.text and 'RT' not
+    #  in ent.text and '@' not in ent.text and '#' not in ent.text:
     #             names[ent.text] = 1
     #         elif ent.text in names:
     #             names[ent.text] += 1
@@ -232,6 +232,7 @@ def parse_text(tweets):
 def find_award(tweet):
     global OFFICIAL_AWARDS
     best = .2
+    best_match = ""
     for award in OFFICIAL_AWARDS:
         for ent in tweet.ents:
             if similar(award, ent.text) > best:
@@ -240,6 +241,7 @@ def find_award(tweet):
     if best == .2:
         return None
     return best_match
+
 
 def main():
     '''This function calls your program. Typing "python gg_api.py"
@@ -279,6 +281,7 @@ def main():
                 continue
             tokens.append(token.lemma_.lower())
         for token in tokens:
+            # find hosts
             if token == 'host' and not (next_flag and should_flag):
                 for ent in tweet.ents:
                     if ent_filter(ent):
@@ -299,6 +302,7 @@ def main():
         if n == 0:
             break
         n -= 1
+
     unique_hosts = sorted(set(potential_hosts), key=potential_hosts.count)
     counts = [potential_hosts.count(host) for host in unique_hosts]
     host_counts = list(zip(unique_hosts, counts))
@@ -325,6 +329,7 @@ def main():
     print('Time', str(end_time - start_time))
     print("Pre-ceremony processing complete.")
     return
+
 
 if __name__ == '__main__':
     main()
