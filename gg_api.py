@@ -187,7 +187,8 @@ def form_answer():
     answer["award_data"] = {}
     for award in OFFICIAL_AWARDS:
         answer["award_data"][award] = [nominees[award], presenters[award], winners[award]]
-    return json.dumps(answer)
+    with open('answer2013.json', 'w') as f:
+        json.dump(answer, f)
 
 
 # load json file as dictionary
@@ -287,7 +288,7 @@ def main():
             if token == 'best':
                 awards_tweets.append(tweet)
                 break  # just for performance while developing
-            if ('nominee') in tweet.text:
+            if ('present') in tweet.text:
                 award = find_award(tweet)
                 if award:
                     potential_presenters[award] = []
