@@ -248,29 +248,49 @@ def parse_text(tweets):
 
 
 def find_award(tweet):
+    best = 0
+    best_match = ""
+    temp = 0
+    Official_tokens = tokenizer.pipe(OFFICIAL_AWARDS)
+    for award in Official_tokens:
+        for token in award:
+            for token2 in tweet:
+                if token.lower == token2.lower:
+                    temp += 1
+                    break
+                elif token.lower == 'television' and token2.lower == 'tv':
+                    temp += 1
+                    break
+        if temp >= best:
+            best = temp
+            best_match = award.text
+        temp = 0
+    return best_match
+
+def find_award_alt(tweet):
     global OFFICIAL_AWARDS
     best = 0
     best_match = ""
 
-    # for award in OFFICIAL_AWARDS:
-    #     for index, token in enumerate(tweet):
-    #         if token.text == 'best':
-    #             if tweet[index] == tweet[-1]:
-    #                 continue
-    #             if 'dress' in tweet[index + 1].text:
-    #                 continue
-    #             text = tweet[index:(index + 4)].text
-    #             if similar(award, text) > best:
-    #                 best = similar(award, text)
-    #                 best_match = award
-    #                 break
-    #         if token.text == 'foreign':
-    #             best_match = 'best foreign language film'
-    #             break
-        # for ent in tweet.ents:
-        #     if similar(award, ent.text) > best:
-        #         best = similar(award, ent.text)
-        #         best_match = award
+    for award in OFFICIAL_AWARDS:
+        for index, token in enumerate(tweet):
+            if token.text == 'best':
+                if tweet[index] == tweet[-1]:
+                    continue
+                if 'dress' in tweet[index + 1].text:
+                    continue
+                text = tweet[index:(index + 4)].text
+                if similar(award, text) > best:
+                    best = similar(award, text)
+                    best_match = award
+                    break
+            if token.text == 'foreign':
+                best_match = 'best foreign language film'
+                break
+        for ent in tweet.ents:
+            if similar(award, ent.text) > best:
+                best = similar(award, ent.text)
+                best_match = award
     if best == 0:
         return None
     return best_match
@@ -313,10 +333,17 @@ def main():
     potential_presenters = {}
     potential_awards = []
     awards_split = {}
+    winners_split = {}
+    noms_split = {}
+    presenters_split = {}
     award_entities = {}
     for award in OFFICIAL_AWARDS:
-        awards_split[award] = []
-    awards_split['misc'] = []
+        winners_split[award] = []
+        noms_split[award] = []
+        presenters_split[award] = []
+    winners_split['misc'] = []
+    noms_split['misc'] = []
+    presenters_split['misc'] = []
 
     for w in custom_stop_words:
         nlp.vocab[w].is_stop = True
@@ -351,20 +378,30 @@ def main():
             # awards checking
             if token == 'best':
                 awards_tweets.append(tweet)
-                # a = find_award(tweet)
-                # if a:
-                #     awards_split[a].append(tweet)
-                # else:
-                #     awards_split['misc'].append(tweet)
                 break  # just for performance while developing
             if token == 'present':
                 presenter_tweets.append(tweet)
+                a = find_award(tweet)
+                if a != "":
+                    presenters_split[a] += find_names(tweet)
+                else:
+                    presenters_split['misc'] += find_names(tweet)
                 break
             if token == 'win' or token == 'congrats' or token == 'congratulations':
                 winner_tweets.append(tweet)
+                a = find_award(tweet)
+                if a != "":
+                    winners_split[a] += find_names(tweet)
+                else:
+                    winners_split['misc'] += find_names(tweet)
                 break
             if token == 'nominate' or token == 'nominee':
                 nominee_tweets.append(tweet)
+                a = find_award(tweet)
+                if a != "":
+                    noms_split[a] += find_names(tweet)
+                else:
+                    noms_split['misc'] += find_names(tweet)
                 break
 
         if n == 0:
@@ -392,7 +429,9 @@ def main():
     award_counts = [award_names.count(award_name) for award_name in unique_award_names]
     pprint(list(zip(unique_award_names, award_counts)))
     # get_awards(2013)
-    # pprint(awards_split)
+    pprint(winners_split)
+    pprint(noms_split)
+    pprint(presenters_split)
     possible_winners = []
     possible_noms = []
     possible_presenters = []
@@ -405,9 +444,9 @@ def main():
     # possible_presenters = find_real_names(possible_presenters)
     # possible_noms = find_real_names(possible_noms)
     # possible_winners = find_real_names(possible_winners)
-    pprint(possible_presenters)
-    pprint(possible_noms)
-    pprint(possible_winners)
+    # pprint(possible_presenters)
+    # pprint(possible_noms)
+    # pprint(possible_winners)
     # get_winner(2013)
     end_time = time.time()
     print('Time', str(end_time - start_time))
