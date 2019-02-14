@@ -43,7 +43,7 @@ OFFICIAL_AWARDS = ['cecil b. demille award',
 key_words = ['best', 'motion', 'picture', 'drama', 'performance', 'actress', 'actor', 'comedy',  'musical',
              'animated', 'feature', 'film', 'foreign', 'language', 'supporting', 'role',
              'director', 'screenplay', 'original', 'score', 'song', 'television', 'series', 'miniseries', 'mini', 'mini-series',
-             'cecil', 'demille']
+             'cecil', 'demille', 'award', 'tv']
 tweets = {}
 awards_tweets = []
 presenter_tweets = []
@@ -305,7 +305,9 @@ def find_names(tweet):
     names = re.findall(pattern, text)
     for name in names:
         if name in custom_stop_words:
-            names.remove(name)
+            n1, n2 = name.split(' ')
+            if n1.lower in key_words or n2.lower in key_words:
+                names.remove(name)
     return names
 
 
