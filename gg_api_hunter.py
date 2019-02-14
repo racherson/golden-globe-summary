@@ -54,8 +54,15 @@ host_counts = []
 awards = []
 nominees = {}
 winners = {}
+
 presenters = {}
 answer = {}
+unique_winners = {}
+unique_noms = {}
+unique_presenters = {}
+possible_winners = {}
+possible_noms = {}
+possible_presenters = {}
 
 
 def get_first_and_last(index):
@@ -117,6 +124,11 @@ def get_awards(year):
     '''Awards is a list of strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
+
+    global unique_award_names
+    l = len(unique_award_names)
+    awards = unique_award_names[l-26:][0]
+
     return awards
 
 
@@ -126,9 +138,14 @@ def get_nominees(year):
     the name of this function or what it returns.'''
     # Your code here
     global OFFICIAL_AWARDS
+
     for award in OFFICIAL_AWARDS:
-        nominees[award] = [None]
-        pass
+        nominees[award] = []
+
+    # get top 5 nominees
+    for award in OFFICIAL_AWARDS:
+        nominees[award].append(possible_noms[award][-5:][0])
+
     return nominees
 
 
@@ -138,17 +155,22 @@ def get_winner(year):
     Do NOT change the name of this function or what it returns.'''
     # Your code here
     global OFFICIAL_AWARDS
-    awards_split = {}
+    # awards_split = {}
+    # for award in OFFICIAL_AWARDS:
+    #     awards_split[award] = []
+    # awards_split['misc'] = []
+    # for tweet in awards_tweets:
+    #     a = find_award(tweet)
+    #     if a:
+    #         awards_split[a].append(tweet)
+    #     else:
+    #         awards_split['misc'].append(tweet)
+    # pprint(awards_split)
+
+    # get top 5 nominees
     for award in OFFICIAL_AWARDS:
-        awards_split[award] = []
-    awards_split['misc'] = []
-    for tweet in awards_tweets:
-        a = find_award(tweet)
-        if a:
-            awards_split[a].append(tweet)
-        else:
-            awards_split['misc'].append(tweet)
-    pprint(awards_split)
+        winners[award] = possible_winners[award][-1][0]
+
     return winners
 
 
@@ -158,8 +180,32 @@ def get_presenters(year):
     name of this function or what it returns.'''
     # Your code here
     global OFFICIAL_AWARDS
+
+    # initialize empty list
     for award in OFFICIAL_AWARDS:
-        pass
+        presenters[award] = []
+    # get most common presenters
+    for award in OFFICIAL_AWARDS:
+        presenters[award].append(possible_presenters[award][-1][0])
+        # first_name = possible_presenters[award][-1][0]
+        # first_count = possible_presenters[award][-1][1]
+        # presenters[award].append(get_first_and_last(-1))
+
+        # if the second highest is not the same first name and within a percentage, add it too
+        # index = -2
+        # percent_and_similar = True
+        # while percent_and_similar:
+        #     first_and_last = possible_presenters[index][0].split(' ')
+        #     percent = (possible_presenters[index][1] / first_count)
+        #     if percent < 0.6:
+        #         break
+        #     if first_and_last[0] != first_name and percent > 0.6:
+        #         # hosts.append(host_counts[index][0])
+        #         presenters[award].append(get_first_and_last(index))
+        #         percent_and_similar = False
+        #     else:
+        #         index -= 1
+
     return presenters
 
 
@@ -343,6 +389,7 @@ def main():
     noms_counts = {}
     presenters_counts = {}
     award_entities = {}
+
     for award in OFFICIAL_AWARDS:
         winners_split[award] = []
         noms_split[award] = []
@@ -384,7 +431,7 @@ def main():
             # awards checking
             if token == 'best':
                 awards_tweets.append(tweet)
-                break  # just for performance while developing
+                #break  # just for performance while developing
             if token == 'present':
                 presenter_tweets.append(tweet)
                 a = find_award(tweet)
@@ -392,7 +439,7 @@ def main():
                     presenters_split[a] += find_names(tweet)
                 else:
                     presenters_split['misc'] += find_names(tweet)
-                break
+                #break
             if token == 'win' or token == 'congrats' or token == 'congratulations':
                 winner_tweets.append(tweet)
                 a = find_award(tweet)
@@ -400,7 +447,7 @@ def main():
                     winners_split[a] += find_names(tweet)
                 else:
                     winners_split['misc'] += find_names(tweet)
-                break
+                #break
             if token == 'nominate' or token == 'nominee':
                 nominee_tweets.append(tweet)
                 a = find_award(tweet)
@@ -408,7 +455,7 @@ def main():
                     noms_split[a] += find_names(tweet)
                 else:
                     noms_split['misc'] += find_names(tweet)
-                break
+                #break
 
         if n == 0:
             break
@@ -433,17 +480,22 @@ def main():
                 # pprint(ent.text)
     unique_award_names = sorted(set(award_names), key=award_names.count)
     award_counts = [award_names.count(award_name) for award_name in unique_award_names]
-    pprint(list(zip(unique_award_names, award_counts)))
+    #pprint(list(zip(unique_award_names, award_counts)))
+
     # get_awards(2013)
     # pprint(winners_split)
     # pprint(noms_split)
     # pprint(presenters_split)
-    unique_winners = {}
-    unique_noms = {}
-    unique_presenters = {}
-    possible_winners = {}
-    possible_noms = {}
-    possible_presenters = {}
+
+    # made global at top**
+    # unique_winners = {}
+    # unique_noms = {}
+    # unique_presenters = {}
+    # possible_winners = {}
+    # possible_noms = {}
+    # possible_presenters = {}
+
+
     # for tweet in winner_tweets:
     #     possible_winners += find_names(tweet)
     # for tweet in nominee_tweets:
@@ -459,13 +511,23 @@ def main():
         presenters_counts[award] = [presenters_split[award].count(possible_pres) for possible_pres in unique_presenters[award]]
         possible_winners[award] = list(zip(unique_winners[award], winner_counts[award]))
         possible_noms[award] = list(zip(unique_noms[award], noms_counts[award]))
-        possible_presenters[award] = list(zip(unique_presenters[award], presenters_counts[award]))
+        possible_presenters[award] =list(zip(unique_presenters[award], presenters_counts[award]))
+
+
     # possible_presenters = find_real_names(possible_presenters)
     # possible_noms = find_real_names(possible_noms)
     # possible_winners = find_real_names(possible_winners)
-    pprint(possible_presenters)
-    pprint(possible_noms)
-    pprint(possible_winners)
+    # pprint(possible_presenters)
+    # pprint(possible_noms)
+    # pprint(possible_winners)
+    print ('getting here')
+    get_hosts(2013)
+    get_awards(2013)
+    get_winner(2013)
+    get_nominees(2013)
+    get_presenters(2013)
+    print ('calling form_answer')
+    form_answer()
     # get_winner(2013)
     end_time = time.time()
     print('Time', str(end_time - start_time))
