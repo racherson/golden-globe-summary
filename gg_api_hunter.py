@@ -12,7 +12,8 @@ from imdb import IMDb
 nlp = spacy.load('en_core_web_sm')
 nernlp = spacy.load('en_core_web_sm', disable=['parser', 'tagger'])
 custom_stop_words = [
-        'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg']
+        'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg',
+        'Golden Globe.']
 from spacy.tokenizer import Tokenizer
 tokenizer = Tokenizer(nlp.vocab)
 
@@ -261,11 +262,12 @@ def find_award(tweet):
                 elif token.lower == 'television' and token2.lower == 'tv':
                     temp += 1
                     break
-        if temp >= best:
+        if temp > best:
             best = temp
             best_match = award.text
         temp = 0
     return best_match
+
 
 def find_award_alt(tweet):
     global OFFICIAL_AWARDS
@@ -330,12 +332,14 @@ def main():
     global awards_tweets
     global key_words
     potential_hosts = []
-    potential_presenters = {}
-    potential_awards = []
     awards_split = {}
+
     winners_split = {}
     noms_split = {}
     presenters_split = {}
+    winner_counts = {}
+    noms_counts = {}
+    presenters_counts = {}
     award_entities = {}
     for award in OFFICIAL_AWARDS:
         winners_split[award] = []
@@ -429,24 +433,37 @@ def main():
     award_counts = [award_names.count(award_name) for award_name in unique_award_names]
     pprint(list(zip(unique_award_names, award_counts)))
     # get_awards(2013)
-    pprint(winners_split)
-    pprint(noms_split)
-    pprint(presenters_split)
-    possible_winners = []
-    possible_noms = []
-    possible_presenters = []
-    for tweet in winner_tweets:
-        possible_winners += find_names(tweet)
-    for tweet in nominee_tweets:
-        possible_noms += find_names(tweet)
-    for tweet in presenter_tweets:
-        possible_presenters += find_names(tweet)
+    # pprint(winners_split)
+    # pprint(noms_split)
+    # pprint(presenters_split)
+    unique_winners = {}
+    unique_noms = {}
+    unique_presenters = {}
+    possible_winners = {}
+    possible_noms = {}
+    possible_presenters = {}
+    # for tweet in winner_tweets:
+    #     possible_winners += find_names(tweet)
+    # for tweet in nominee_tweets:
+    #     possible_noms += find_names(tweet)
+    # for tweet in presenter_tweets:
+    #     possible_presenters += find_names(tweet)
+    for award in OFFICIAL_AWARDS:
+        unique_winners[award] = sorted(set(winners_split[award]), key=winners_split[award].count)
+        unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
+        unique_presenters[award] = sorted(set(presenters_split[award]), key=presenters_split[award].count)
+        winner_counts[award] = [winners_split[award].count(possible_winner) for possible_winner in unique_winners[award]]
+        noms_counts[award] = [noms_split[award].count(possible_nom) for possible_nom in unique_noms[award]]
+        presenters_counts[award] = [presenters_split[award].count(possible_pres) for possible_pres in unique_presenters[award]]
+        possible_winners[award] = list(zip(unique_winners[award], winner_counts[award]))
+        possible_noms[award] = list(zip(unique_noms[award], noms_counts[award]))
+        possible_presenters[award] = list(zip(unique_presenters[award], presenters_counts[award]))
     # possible_presenters = find_real_names(possible_presenters)
     # possible_noms = find_real_names(possible_noms)
     # possible_winners = find_real_names(possible_winners)
-    # pprint(possible_presenters)
-    # pprint(possible_noms)
-    # pprint(possible_winners)
+    pprint(possible_presenters)
+    pprint(possible_noms)
+    pprint(possible_winners)
     # get_winner(2013)
     end_time = time.time()
     print('Time', str(end_time - start_time))
