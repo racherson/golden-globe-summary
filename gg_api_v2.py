@@ -454,9 +454,10 @@ def main():
         nlp.vocab[w].is_stop = True
 
     num_tweets = len(data) # total number of tweets
-    n = 100000 # number of tweets to check
+    n = 200000 # number of tweets to check
     skip = int(num_tweets / n) # number of tweets to skip per selection
-    data = data[0::skip] # select n tweets from data
+    if skip != 0:
+        data = data[0::skip] # select n tweets from data
     tweets = nernlp.pipe(data, batch_size=50, n_threads=3)
     for tweet in tweets:
         tokens = []
