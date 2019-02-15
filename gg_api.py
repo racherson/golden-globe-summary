@@ -125,8 +125,8 @@ def get_awards(year):
     # Your code here
 
     global unique_award_names
-    # print ('here11')
-    # print (unique_award_names)
+
+    # get 26 most common award names
     if len(unique_award_names) > 26:
         awards = unique_award_names[-26:][0]
     else:
@@ -143,12 +143,21 @@ def get_nominees(year):
     global OFFICIAL_AWARDS
     global possible_noms
 
+    # initialize value as empty list
     for award in OFFICIAL_AWARDS:
-        nominees[award] = []
+        nominees[award] = [None]
 
     # get top 5 nominees
     for award in OFFICIAL_AWARDS:
-        nominees[award].append(possible_noms[award][-5:][0])
+        curr_noms = possible_noms[award]
+        if len(curr_noms) >= 5:
+            nominees[award].append(possible_noms[award][-5:][0])
+        elif len(curr_noms) == 0:
+            continue
+        elif len(curr_noms) < 5:
+            nominees[award].append(possible_noms[award][:][0])
+        # print ('here')
+        # print (possible_noms[award])
 
     return nominees
 
@@ -172,9 +181,13 @@ def get_winner(year):
     #         awards_split['misc'].append(tweet)
     # pprint(awards_split)
 
-    # get top 5 nominees
+    # get top winner
     for award in OFFICIAL_AWARDS:
-        winners[award] = possible_winners[award][-1][0]
+        curr_winner = possible_winners[award]
+        if len(curr_winner) >= 1:
+            winners[award] = possible_winners[award][-1][0]
+        else:
+            winners[award] = None
 
     return winners
 
@@ -192,7 +205,24 @@ def get_presenters(year):
         presenters[award] = []
     # get most common presenters
     for award in OFFICIAL_AWARDS:
-        presenters[award].append(possible_presenters[award][-1][0])
+        curr_presenters = possible_presenters[award]
+        if len(curr_presenters) >= 1:
+            presenters[award].append(possible_presenters[award][-1][0])
+
+    # for award in OFFICIAL_AWARDS:
+    #     nominees[award] = [None]
+    #
+    # # get top 5 nominees
+    # for award in OFFICIAL_AWARDS:
+    #     curr_noms = possible_noms[award]
+    #     if len(curr_noms) >= 5:
+    #         nominees[award].append(possible_noms[award][-5:][0])
+    #     elif len(curr_noms) == 0:
+    #         continue
+    #     elif len(curr_noms) < 5:
+    #         nominees[award].append(possible_noms[award][:][0])
+    #     # print ('here')
+    #     # print (possible_noms[award])
 
     return presenters
 
