@@ -1,21 +1,21 @@
-import sys
-import re
-import string
-import time
-import json
 import copy
-from pprint import pprint
-import spacy
-from difflib import SequenceMatcher
-# from imdb import IMDb
+import json
 import pdb
+import re
+import spacy
+import string
+import sys
+import time
+from difflib import SequenceMatcher
+from pprint import pprint
+from spacy.tokenizer import Tokenizer
+# from imdb import IMDb
 
 nlp = spacy.load('en_core_web_sm')
 nernlp = spacy.load('en_core_web_sm', disable=['parser', 'tagger'])
 custom_stop_words = [
         'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg',
-        'Golden Globe.']
-from spacy.tokenizer import Tokenizer
+        'Golden Globe.', 'Golden Globe']
 tokenizer = Tokenizer(nlp.vocab)
 
 OFFICIAL_AWARDS = ['cecil b. demille award',
@@ -44,30 +44,31 @@ OFFICIAL_AWARDS = ['cecil b. demille award',
 key_words = ['best', 'motion', 'picture', 'drama', 'performance', 'actress', 'actor', 'comedy',  'musical',
              'animated', 'feature', 'film', 'foreign', 'language', 'supporting', 'role',
              'director', 'screenplay', 'original', 'score', 'song', 'television', 'series', 'miniseries', 'mini', 'mini-series',
-             'cecil', 'demille', 'award', 'tv']
-tweets = {}
-awards_tweets = []
-presenter_tweets = []
-nominee_tweets = []
-winner_tweets = []
-hosts = []
-host_counts = []
-awards = []
-nominees = {}
-winners = {}
+             'cecil', 'demille', 'award', 'tv', 'golden', 'globe', 'hollywood', 'press', 'association']
 
-presenters = {}
-answer = {}
-unique_winners = {}
-unique_noms = {}
-unique_presenters = {}
-possible_winners = {}
-possible_noms = {}
-possible_presenters = {}
-unique_award_names = []
+# tweets = {}
+# awards_tweets = []
+# presenter_tweets = []
+# nominee_tweets = []
+# winner_tweets = []
+# hosts = []
+# host_counts = []
+# awards = []
+# nominees = {}
+# winners = {}
+#
+# presenters = {}
+# answer = {}
+# unique_winners = {}
+# unique_noms = {}
+# unique_presenters = {}
+# possible_winners = {}
+# possible_noms = {}
+# possible_presenters = {}
+# unique_award_names = []
 
-def get_first_and_last(index):
-    global host_counts
+def get_first_and_last(host_counts, index):
+    # global host_counts
     index_name = host_counts[index][0].split(' ')
     if len(index_name) >= 2:
         return host_counts[index][0]
@@ -94,12 +95,14 @@ def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
-    global host_counts
-
+    sp_data = load_data('superprocessed_gg' + str(year) + '.json')
+    host_counts = sp_data['host_counts']
+    hosts = []
+    # global host_counts
     # last element in host_counts has largest count since sorted
     first_name = host_counts[-1][0].split(' ')[0]
     first_host_count = host_counts[-1][1]
-    hosts.append(get_first_and_last(-1))  # make sure to find the first and last name of this host
+    hosts.append(get_first_and_last(host_counts, -1))  # make sure to find the first and last name of this host
 
     # if the second highest is not the same first name and within a percentage, add it too
     index = -2
@@ -111,7 +114,7 @@ def get_hosts(year):
             break
         if first_and_last[0] != first_name and percent > 0.6:
             # hosts.append(host_counts[index][0])
-            hosts.append(get_first_and_last(index))
+            hosts.append(get_first_and_last(host_counts, index))
             percent_and_similar = False
         else:
             index -= 1
@@ -123,13 +126,15 @@ def get_awards(year):
     '''Awards is a list of strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
-    global unique_award_names
+    sp_data = load_data('superprocessed_gg' + str(year) + '.json')
+    unique_award_names = sp_data['unique_award_names']
+    # global unique_award_names
 
     # get 26 most common award names
     if len(unique_award_names) > 26:
-        awards = unique_award_names[-26:][0]
+        awards = unique_award_names[-26:]
     else:
-        awards = unique_award_names[:][0]
+        awards = unique_award_names
 
     return awards
 
@@ -139,22 +144,24 @@ def get_nominees(year):
     names as keys, and each entry a list of strings. Do NOT change
     the name of this function or what it returns.'''
     # Your code here
-    global OFFICIAL_AWARDS
-    global possible_noms
+    sp_data = load_data('superprocessed_gg' + str(year) + '.json')
+    possible_noms = sp_data['unique_noms']
+    nominees = {}
+    # global possible_noms
 
     # initialize value as empty list
     for award in OFFICIAL_AWARDS:
-        nominees[award] = [None]
+        nominees[award] = []
 
     # get top 5 nominees
     for award in OFFICIAL_AWARDS:
         curr_noms = possible_noms[award]
         if len(curr_noms) >= 5:
-            nominees[award].append(possible_noms[award][-5:][0])
+            nominees[award].append(possible_noms[award][-5:])
         elif len(curr_noms) == 0:
             continue
         elif len(curr_noms) < 5:
-            nominees[award].append(possible_noms[award][:][0])
+            nominees[award].append(possible_noms[award])
         # print ('here')
         # print (possible_noms[award])
 
@@ -166,8 +173,10 @@ def get_winner(year):
     names as keys, and each entry containing a single string.
     Do NOT change the name of this function or what it returns.'''
     # Your code here
-    global OFFICIAL_AWARDS
-    global possible_winners
+    sp_data = load_data('superprocessed_gg' + str(year) + '.json')
+    possible_winners = sp_data['unique_winners']
+    winners = {}
+    # global possible_winners
     # awards_split = {}
     # for award in OFFICIAL_AWARDS:
     #     awards_split[award] = []
@@ -184,7 +193,7 @@ def get_winner(year):
     for award in OFFICIAL_AWARDS:
         curr_winner = possible_winners[award]
         if len(curr_winner) >= 1:
-            winners[award] = possible_winners[award][-1][0]
+            winners[award] = possible_winners[award][-1]
         else:
             winners[award] = None
 
@@ -196,8 +205,10 @@ def get_presenters(year):
     names as keys, and each entry a list of strings. Do NOT change the
     name of this function or what it returns.'''
     # Your code here
-    global OFFICIAL_AWARDS
-    global possible_presenters
+    sp_data = load_data('superprocessed_gg' + str(year) + '.json')
+    possible_presenters = sp_data['unique_presenters']
+    presenters = {}
+    # global possible_presenters
 
     # initialize empty list
     for award in OFFICIAL_AWARDS:
@@ -206,7 +217,7 @@ def get_presenters(year):
     for award in OFFICIAL_AWARDS:
         curr_presenters = possible_presenters[award]
         if len(curr_presenters) >= 1:
-            presenters[award].append(possible_presenters[award][-1][0])
+            presenters[award].append(possible_presenters[award][-1])
 
     # for award in OFFICIAL_AWARDS:
     #     nominees[award] = [None]
@@ -232,45 +243,31 @@ def pre_ceremony():
     plain text file. It is the first thing the TA will run when grading.
     Do NOT change the name of this function or what it returns.'''
     # Your code here
-    print ('pre ceremony now')
-    print('Starting...')
-    global tweets
-    # names = {}
-    # docs = []
-    tweets_2013 = load_data('gg2013.json')
-    #pprint(tweets_2013[1])
-    tweets_2013 = extract_text(tweets_2013)
-    tweets[2013] = tweets_2013
-    with open('processed_gg2013.json', 'w') as f:
-        json.dump(tweets_2013, f)
-    # gen, ner = parse_text(tweets_2013)
-    # for doc in ner:
-    #     for ent in doc.ents:
-    #         if (ent.text not in custom_stop_words) and (ent.text not in names) and 'http' not in ent.text and 'RT' not
-    #  in ent.text and '@' not in ent.text and '#' not in ent.text:
-    #             names[ent.text] = 1
-    #         elif ent.text in names:
-    #             names[ent.text] += 1
-    # for doc in gen:
-    #     # print(doc)
-    #     docs.append(doc)
-    #     # pass
-    # for k, v in list(names.items()):
-    #     if v <= 50:
-    #         del names[k]
-    # print(docs[1])
-    # print(names)
+    print('Starting pre-ceremony now...')
+    tweets = {}
+    for year in range(2000, 2020):
+        try:
+            print('Checking for  ' + str(year) + ' data')
+            data = load_data('gg' + str(year) + '.json')
+            tweets[year] = extract_text(data)
+            print('Found ' + str(year) + ' data')
+        except:
+            print(str(year) + ' data not found')
+    for year in tweets.keys():
+        with open('processed_gg' + str(year) + '.json', 'w') as f:
+            json.dump(tweets[year], f)
+    print('Pre-ceremony complete')
     return
 
 
-def form_answer():
-    global OFFICIAL_AWARDS
+def form_answer(year, hosts, awards, winners, nominees, presenters):
+    answer = {}
     answer["hosts"] = hosts
     answer["awards"] = awards
     answer["award_data"] = {}
     for award in OFFICIAL_AWARDS:
         answer["award_data"][award] = [nominees[award], presenters[award], winners[award]]
-    with open('answer2013.json', 'w') as f:
+    with open('answer' + str(year) + 'v2.json', 'w') as f:
         json.dump(answer, f)
     print_answer(answer)
 
@@ -298,10 +295,10 @@ def print_answer(answer):
 # load json file as dictionary
 # file_name: 'gg2013.json'
 def load_data(file_name):
-    tweets = {}
+    data = {}
     with open(file_name,'r') as f:
-        tweets = json.load(f)
-    return tweets
+        data = json.load(f)
+    return data
 
 
 # found on https://stackoverflow.com/questions/17388213/find-the-similarity-metric-between-two-strings
@@ -338,8 +335,8 @@ def find_award(tweet):
     best = 0
     best_match = ""
     temp = 0
-    Official_tokens = tokenizer.pipe(OFFICIAL_AWARDS)
-    for award in Official_tokens:
+    official_tokens = tokenizer.pipe(OFFICIAL_AWARDS)
+    for award in official_tokens:
         for token in award:
             for token2 in tweet:
                 if token.lower == token2.lower:
@@ -356,10 +353,8 @@ def find_award(tweet):
 
 
 def find_award_alt(tweet):
-    global OFFICIAL_AWARDS
     best = 0
     best_match = ""
-
     for award in OFFICIAL_AWARDS:
         for index, token in enumerate(tweet):
             if token.text == 'best':
@@ -386,14 +381,13 @@ def find_award_alt(tweet):
 
 def find_names(tweet):
     text = tweet.text
+    pattern = r'(?=((?<![A-Za-z])[A-Z][a-z]+ [A-Z][a-z]+))'
+    matches = re.findall(pattern, text)
     names = []
-    pattern = r'(?=((?<![A-Za-z.])[A-Z][a-z.]*[\s-][A-Z][a-z.]*))'
-    names = re.findall(pattern, text)
-    for name in names:
-        if name in custom_stop_words:
-            n1, n2 = name.split(' ')
-            if n1.lower in key_words or n2.lower in key_words:
-                names.remove(name)
+    for match in matches:
+        w1, w2 = match.split(' ')
+        if not (match in custom_stop_words or w1.lower() in key_words or w2.lower() in key_words):
+            names.append(match)
     return names
 
 
@@ -408,55 +402,63 @@ def find_real_names(names_list):
     #             real_names[name] = 1
     return real_names
 
+
 def main():
     '''This function calls your program. Typing "python gg_api.py"
     will run this function. Or, in the interpreter, import gg_api
     and then run gg_api.main(). This is the second thing the TA will
     run when grading. Do NOT change the name of this function or
     what it returns.'''
-    print ('main now')
-    global tweets
-    global host_counts
-    global awards
-    global awards_tweets
-    global key_words
-    global unique_award_names
-    global possible_noms
-    global possible_presenters
-    global possible_winners
+    pre_ceremony()
+    print ('Starting main now...')
+    start_time = time.time()
 
     potential_hosts = []
-    awards_split = {}
-
-    winners_split = {}
-    noms_split = {}
+    award_tweets = []
     presenters_split = {}
-    winner_counts = {}
-    noms_counts = {}
+    noms_split = {}
+    winners_split = {}
+    unique_presenters = {}
+    unique_noms = {}
+    unique_winners = {}
     presenters_counts = {}
-    award_entities = {}
+    noms_counts = {}
+    winner_counts = {}
+    possible_presenters = {}
+    possible_noms = {}
+    possible_winners = {}
 
     for award in OFFICIAL_AWARDS:
-        winners_split[award] = []
-        noms_split[award] = []
         presenters_split[award] = []
-    winners_split['misc'] = []
-    noms_split['misc'] = []
+        noms_split[award] = []
+        winners_split[award] = []
     presenters_split['misc'] = []
+    noms_split['misc'] = []
+    winners_split['misc'] = []
+
+    data = None
+    data_year = None
+    for year in range(2000, 2020):
+        try:
+            data = load_data('processed_gg' + str(year) + '.json')
+            print('Using data for ' + str(year))
+            data_year = year
+            break
+        except:
+            pass
+    if not data:
+        print('No processed data found, exiting program')
+        sys.exit()
 
     for w in custom_stop_words:
         nlp.vocab[w].is_stop = True
-    pre_ceremony()
 
-    # tweets_2013, ner = parse_text(tweets[2013])
-    start_time = time.time()
-    data = load_data('processed_gg2013.json')
-    num_tweets = len(data)
-    n = 100000
-    skip = int(num_tweets/n)
-    data = data[0::skip]
-    tweets[2013] = nernlp.pipe(data, batch_size = 50, n_threads = 3)
-    for tweet in tweets[2013]:
+    num_tweets = len(data) # total number of tweets
+    n = 100000 # number of tweets to check
+    skip = int(num_tweets / n) # number of tweets to skip per selection
+    data = data[0::skip] # select n tweets from data
+    tweets = nernlp.pipe(data, batch_size=50, n_threads=3)
+    for tweet in tweets:
         tokens = []
         next_flag = False
         should_flag = False
@@ -476,36 +478,34 @@ def main():
                 for ent in tweet.ents:
                     if ent_filter(ent):
                         potential_hosts.append(ent.text.lower())
-                # pprint(tweet)
             # awards checking
             if token == 'best':
-                awards_tweets.append(tweet)
-                #break  # just for performance while developing
+                award_tweets.append(tweet)
+                # break # just for performance while developing
             if token == 'present':
-                presenter_tweets.append(tweet)
+                # presenter_tweets.append(tweet)
                 a = find_award(tweet)
                 if a != "":
                     presenters_split[a] += find_names(tweet)
                 else:
                     presenters_split['misc'] += find_names(tweet)
-                #break
+                # break
             if token == 'win' or token == 'congrats' or token == 'congratulations':
-                winner_tweets.append(tweet)
+                # winner_tweets.append(tweet)
                 a = find_award(tweet)
                 if a != "":
                     winners_split[a] += find_names(tweet)
                 else:
                     winners_split['misc'] += find_names(tweet)
-                #break
+                # break
             if token == 'nominate' or token == 'nominee':
-                nominee_tweets.append(tweet)
+                # nominee_tweets.append(tweet)
                 a = find_award(tweet)
                 if a != "":
                     noms_split[a] += find_names(tweet)
                 else:
                     noms_split['misc'] += find_names(tweet)
-                #break
-
+                # break
         if n == 0:
             break
         n -= 1
@@ -516,10 +516,10 @@ def main():
     # pprint(host_counts)  # print our sorted list of potential hosts + mentions
     # hosts = get_hosts(2013)
     # print(hosts)
-    # for award_tweet in awards_tweets:
+    # for award_tweet in award_tweets:
     #   pprint(award_tweet.text)
     award_names = []
-    for award_tweet in awards_tweets:
+    for award_tweet in award_tweets:
         # pprint(award_tweet.text)
         # for token in award_tweet:
         #     pprint(token.pos_)
@@ -530,7 +530,7 @@ def main():
     tmp_award_names = sorted(set(award_names), key=award_names.count)
     award_counts = [award_names.count(award_name) for award_name in tmp_award_names]
     unique_award_names = list(zip(tmp_award_names, award_counts))
-    #pdb.set_trace()
+    # pdb.set_trace()
 
     # get_awards(2013)
     # pprint(winners_split)
@@ -545,13 +545,13 @@ def main():
     # possible_noms = {}
     # possible_presenters = {}
 
-
     # for tweet in winner_tweets:
     #     possible_winners += find_names(tweet)
     # for tweet in nominee_tweets:
     #     possible_noms += find_names(tweet)
     # for tweet in presenter_tweets:
     #     possible_presenters += find_names(tweet)
+
     for award in OFFICIAL_AWARDS:
         unique_winners[award] = sorted(set(winners_split[award]), key=winners_split[award].count)
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
@@ -561,8 +561,25 @@ def main():
         presenters_counts[award] = [presenters_split[award].count(possible_pres) for possible_pres in unique_presenters[award]]
         possible_winners[award] = list(zip(unique_winners[award], winner_counts[award]))
         possible_noms[award] = list(zip(unique_noms[award], noms_counts[award]))
-        possible_presenters[award] =list(zip(unique_presenters[award], presenters_counts[award]))
+        possible_presenters[award] = list(zip(unique_presenters[award], presenters_counts[award]))
 
+    with open('superprocessed_gg' + str(data_year) + '.json', 'w') as f:
+        sp_data = {}
+        sp_data['host_counts'] = host_counts
+        sp_data['unique_award_names'] = unique_award_names
+        sp_data['unique_presenters'] = unique_presenters
+        sp_data['unique_noms'] = unique_noms
+        sp_data['unique_winners'] = unique_winners
+        json.dump(sp_data, f)
+
+    # # METHOD FOR SERIALIZING SPACY DOC OBJECTS
+    # serializable_data = []
+    # for tweet in data:
+    #     serializable_data.append(tweet.to_bytes())
+    # recovered_data = []
+    # for tweet in serializable_data:
+    #     recovered_data.append(nlp('').from_bytes(tweet))
+    # tweets = recovered_data
 
     # possible_presenters = find_real_names(possible_presenters)
     # possible_noms = find_real_names(possible_noms)
@@ -571,18 +588,16 @@ def main():
     # pprint(possible_noms)
     # pprint(possible_winners)
     # pdb.set_trace()
-    print ('getting here')
-    get_hosts(2013)
-    get_awards(2013)
-    get_winner(2013)
-    get_nominees(2013)
-    get_presenters(2013)
-    print ('calling form_answer')
-    form_answer()
-    # get_winner(2013)
+    hosts = get_hosts(data_year)
+    awards = get_awards(data_year)
+    winners = get_winner(data_year)
+    nominees = get_nominees(data_year)
+    presenters = get_presenters(data_year)
+    print ('Calling form_answer...')
+    form_answer(data_year, hosts, awards, winners, nominees, presenters)
     end_time = time.time()
+    print("Main complete")
     print('Time', str(end_time - start_time))
-    print("Pre-ceremony processing complete.")
     return
 
 
