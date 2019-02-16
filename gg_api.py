@@ -87,7 +87,7 @@ def get_hosts(year):
         answer=load_data('answer2018.json')
     if year=='2019' or year==2019:
         answer=load_data('answer2019.json')
-    else: print('h9')
+    #else: print('h9')
     #answers2013 = load_data('answer2013.json')
     hosts=answer["hosts"]
 
@@ -126,19 +126,28 @@ def get_awards(year):
     # Your code here
     awards=list()
     answers2013 = load_data('answer2013.json')
-    for x in answers2013["award_data"]:
-        awards.append(x)
+    awards=answers2013["awardnames"]
+    print(awards)
+    #for x in answers2013["award_data"]:
+    #    awards.append(x)
 
     return awards
 
 def find_awards(year):
     global unique_award_names
-
+    global awards
     # get 26 most common award names
+    print('before')
+    print(unique_award_names)
     if len(unique_award_names) > 26:
-        awards = unique_award_names[-26:][0]
+        for x in range(26):
+            awards.append(unique_award_names[-x][0])
     else:
-        awards = unique_award_names[:][0]
+        for x in range(len(unique_award_names)):
+            awards.append(unique_award_names[:][0])
+    
+    #print('after')
+    #print(awards)
 
 def get_nominees(year):
     '''Nominees is a dictionary with the hard coded award
@@ -148,11 +157,11 @@ def get_nominees(year):
     nominees
     answers2013 = load_data('answer2013.json')
     for x in answers2013["award_data"]:
-        print(x)
+        #print(x)
         lst=answers2013["award_data"][x]
         nominees[x]=lst[0]
-    print('noms')
-    print(nominees)
+    #print('noms')
+    #print(nominees)
     return nominees
 
 def find_nominees(year):
@@ -254,12 +263,12 @@ def find_presenters(year):
     # get most common presenters
     for award in OFFICIAL_AWARDS:
         curr_presenters = possible_presenters[award]
-        print('curr')
-        print(curr_presenters)
+        #print('curr')
+        #print(curr_presenters)
         if len(curr_presenters) >= 1:
             presenters[award].append(possible_presenters[award][-1][0])
-        print('final')
-        print(presenters[award])
+        #print('final')
+        #print(presenters[award])
 
 def pre_ceremony():
     '''This function loads/fetches/processes any data your program
@@ -321,10 +330,14 @@ def form_answer(year):
     global OFFICIAL_AWARDS_1315
     global OFFICIAL_AWARDS_1819
     OFFICIAL_AWARDS = []
-
+    global nominees
+    global presenters
+    global winners
+    global awards
     OFFICIAL_AWARDS = get_awards_by_year(year)
 
     answer["hosts"] = hosts
+    answer["awardnames"]=awards
     answer["award_data"] = {}
     for award in OFFICIAL_AWARDS:
         answer["award_data"][award] = [nominees[award], presenters[award], winners[award]]
