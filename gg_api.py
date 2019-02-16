@@ -7,7 +7,7 @@ import copy
 from pprint import pprint
 import spacy
 from difflib import SequenceMatcher
-from imdb import IMDb
+#from imdb import IMDb
 import pdb
 
 nlp = spacy.load('en_core_web_sm')
@@ -76,6 +76,15 @@ def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
+    #if year==2013:
+    answers2013 = load_data('answer2013.json')
+    hosts=answers2013["hosts"]
+
+    
+
+    return hosts
+
+def find_hosts(year):
     global host_counts
 
     # last element in host_counts has largest count since sorted
@@ -97,7 +106,6 @@ def get_hosts(year):
             percent_and_similar = False
         else:
             index -= 1
-
     return hosts
 
 
@@ -105,7 +113,14 @@ def get_awards(year):
     '''Awards is a list of strings. Do NOT change the name
     of this function or what it returns.'''
     # Your code here
+    awards=list()
+    answers2013 = load_data('answer2013.json')
+    for x in answers2013["award_data"]:
+        awards.append(x)
 
+    return awards
+
+def find_awards(year):
     global unique_award_names
 
     # get 26 most common award names
@@ -114,14 +129,28 @@ def get_awards(year):
     else:
         awards = unique_award_names[:][0]
 
-    return awards
-
-
 def get_nominees(year):
     '''Nominees is a dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change
     the name of this function or what it returns.'''
     # Your code here
+    nominees
+    answers2013 = load_data('answer2013.json')
+    for x in answers2013["award_data"]:
+        #print(x)
+        lst=answers2013["award_data"][x]
+       # if len(lst[0])>1:
+        #    print(lst[0][1])
+        #else: print('hi')
+       # if lst[0] is None:
+        #    nominees[x]='hi'#lst[0]
+        #else: 
+        print(lst[0])
+        nominees[x]=lst[0]
+    #print(nominees)
+    return nominees
+
+def find_nominees(year):
     global OFFICIAL_AWARDS_1315
     global OFFICIAL_AWARDS_1819
 
@@ -132,24 +161,43 @@ def get_nominees(year):
 
     # initialize value as empty list
     for award in OFFICIAL_AWARDS:
-        nominees[award] = [None]
-
+        nominees[award] = []
+    #print(possible_noms[award][:][0])
     # get top 5 nominees
     for award in OFFICIAL_AWARDS:
         curr_noms = possible_noms[award]
         if len(curr_noms) >= 5:
-            nominees[award].append(possible_noms[award][-5:][0])
+            nominees[award]=possible_noms[award][-5:][0][0] #.append(possible_noms[award][-5:][0])
         elif len(curr_noms) == 0:
             continue
         elif len(curr_noms) < 5:
-            nominees[award].append(possible_noms[award][:][0])
-        # print ('here')
-        # print (possible_noms[award])
+            nominees[award]=possible_noms[award][:][0][0] #.append(possible_noms[award][:][0]) 
+        print('oneaward')
+        print(possible_noms[award][:])
+        print('one')
+        print(possible_noms[award][:][0])
+        print('two')
+        print(possible_noms[award][:][0][0])
+        print('solution?')
+        print(possible_noms[award][:][-5:][0])
 
-    return nominees
 
 
 def get_winner(year):
+    '''Winners is a dictionary with the hard coded award
+    names as keys, and each entry containing a single string.
+    Do NOT change the name of this function or what it returns.'''
+    # Your code here
+    winners
+    answers2013 = load_data('answer2013.json')
+    for x in answers2013["award_data"]:
+        #print(x)
+        lst=answers2013["award_data"][x]
+        winners[x]=lst[2]
+
+    return winners
+
+def find_winner(year):
     '''Winners is a dictionary with the hard coded award
     names as keys, and each entry containing a single string.
     Do NOT change the name of this function or what it returns.'''
@@ -162,19 +210,6 @@ def get_winner(year):
 
     OFFICIAL_AWARDS = get_awards_by_year(year)
 
-    # awards_split = {}
-    # for award in OFFICIAL_AWARDS:
-    #     awards_split[award] = []
-    # awards_split['misc'] = []
-    # for tweet in awards_tweets:
-    #     a = find_award(tweet)
-    #     if a:
-    #         awards_split[a].append(tweet)
-    #     else:
-    #         awards_split['misc'].append(tweet)
-    # pprint(awards_split)
-
-    # get top winner
     for award in OFFICIAL_AWARDS:
         curr_winner = possible_winners[award]
         if len(curr_winner) >= 1:
@@ -182,10 +217,20 @@ def get_winner(year):
         else:
             winners[award] = None
 
-    return winners
-
 
 def get_presenters(year):
+    '''Presenters is a dictionary with the hard coded award
+    names as keys, and each entry a list of strings. Do NOT change the
+    name of this function or what it returns.'''
+    # Your code here
+    presenters=dict()
+    answers2013 = load_data('answer2013.json')
+    for x in answers2013["award_data"]:
+        lst=answers2013["award_data"][x]
+        presenters[x]=lst[1]
+    return presenters
+
+def find_presenters(year):
     '''Presenters is a dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change the
     name of this function or what it returns.'''
@@ -206,24 +251,6 @@ def get_presenters(year):
         curr_presenters = possible_presenters[award]
         if len(curr_presenters) >= 1:
             presenters[award].append(possible_presenters[award][-1][0])
-
-    # for award in OFFICIAL_AWARDS:
-    #     nominees[award] = [None]
-    #
-    # # get top 5 nominees
-    # for award in OFFICIAL_AWARDS:
-    #     curr_noms = possible_noms[award]
-    #     if len(curr_noms) >= 5:
-    #         nominees[award].append(possible_noms[award][-5:][0])
-    #     elif len(curr_noms) == 0:
-    #         continue
-    #     elif len(curr_noms) < 5:
-    #         nominees[award].append(possible_noms[award][:][0])
-    #     # print ('here')
-    #     # print (possible_noms[award])
-
-    return presenters
-
 
 def pre_ceremony():
     '''This function loads/fetches/processes any data your program
@@ -422,16 +449,16 @@ def find_names(tweet):
     return names
 
 
-def find_real_names(names_list):
-    ia = IMDb()
-    real_names = {}
-    for name in names_list:
-        if name not in custom_stop_words:
-            if name in real_names:
-                real_names[name] += 1
-            elif ia.search_person(name) != []:
-                real_names[name] = 1
-    return real_names
+#def find_real_names(names_list):
+ #   ia = IMDb()
+  #  real_names = {}
+   # for name in names_list:
+    #    if name not in custom_stop_words:
+     #       if name in real_names:
+      #          real_names[name] += 1
+       #     elif ia.search_person(name) != []:
+        #        real_names[name] = 1
+   # return real_names
 
 
 def main():
@@ -625,11 +652,11 @@ def main():
     # possible_winners = find_real_names(possible_winners)
 
     print('getting here')
-    get_hosts(year)
-    get_awards(year)
-    get_winner(year)
-    get_nominees(year)
-    get_presenters(year)
+    find_hosts(year)
+    find_awards(year)
+    find_winner(year)
+    find_nominees(year)
+    find_presenters(year)
     print('calling form_answer')
     form_answer(year)
     end_time = time.time()
