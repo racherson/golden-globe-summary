@@ -9,5 +9,5 @@ Install spacy:
 
     $ python -m spacy download en
     
-Run gg_api_v2.py file
+Run gg_api.py file
     - Contains preceremony, main, and get functions

@@ -3,11 +3,11 @@ gg2015.json
 filtered_2013.json
 filtered_2015.json
 processed_gg2013.json
+processed_gg2015.json
 .idea/
 .DS_Store
 __pycache__/
 answer2013.json
-answer2013v2.json
+answer2015.json
 gg_awards.py
-superprocessed_gg2013.json
 gg_api_v3.py

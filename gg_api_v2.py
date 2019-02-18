@@ -59,12 +59,6 @@ custom_stop_words = [
     'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg',
     'Golden Globe.', 'Golden Globe']
 
-
-# key_words = ['best', 'motion', 'picture', 'drama', 'performance', 'actress', 'actor', 'comedy',  'musical',
-#              'animated', 'feature', 'film', 'foreign', 'language', 'supporting', 'role',
-#              'director', 'screenplay', 'original', 'score', 'song', 'television', 'series', 'miniseries', 'mini', 'mini-series',
-#              'cecil', 'demille', 'award', 'tv', 'golden', 'globe', 'hollywood', 'press', 'association']
-
 def get_first_and_last(hosts, index):
     name = hosts[index]
     split_name = name.split(' ')
@@ -88,7 +82,7 @@ def get_first_and_last(hosts, index):
 def find_dressed(dressed, tweet, key_words):
     posdress = dressed['best']
     negdress = dressed['worst']
-    # dressed={}
+    # dressed = {}
     names = find_names(tweet, key_words)
     if len(names) > 0:
         for token in tweet:
@@ -225,7 +219,7 @@ def nomfilter(tweet, key_words):
         txt = ent.text
         txt = re.sub(r'[^a-zA-Z ]+', '', txt)
         for x in txt.split(' '):
-            if x in custom_stop_words or (x.lower() in key_words.keys() and key_words[x.lower()] > 100):
+            if x in custom_stop_words or x.lower() in key_words:
                 ignoreflag = True
         if not ignoreflag and not (txt == '' or txt == ' '):
             stri = txt.lower()
@@ -389,7 +383,7 @@ def find_names(tweet, key_words):
         split = match.split(' ')
         ignore_flag = False
         for word in split:
-            if word in key_words.keys() and key_words[word] > 100:
+            if word.lower() in key_words:
                 ignore_flag = True
                 break
         if not ignore_flag:
@@ -455,6 +449,7 @@ def best_and_worst(year, best_dress, worst_dress):
     file.write('Worst Dressed: '  + worst_dress + '\n')
     file.close()
 
+
 # phrase tree implementation
 class WordNode:
     def __init__(self, word):
@@ -463,24 +458,19 @@ class WordNode:
         self.count = 0
 
 
-def add_phrase(node, split_phrase, key_words):
+def add_phrase(node, split_phrase):
     if len(split_phrase) == 0:
         node.count += 1
         return
     next_word = split_phrase[0].lower()
     if nlp.vocab[next_word].is_stop:
-        add_phrase(node, split_phrase[1:], key_words)
+        add_phrase(node, split_phrase[1:])
+    elif next_word in node.children.keys():
+        add_phrase(node.children[next_word], split_phrase[1:])
     else:
-        if next_word in key_words.keys():
-            key_words[next_word] += 1
-        else:
-            key_words[next_word] = 1
-        if next_word in node.children.keys():
-            add_phrase(node.children[next_word], split_phrase[1:], key_words)
-        else:
-            new_word_node = WordNode(next_word)
-            node.children[next_word] = new_word_node
-            add_phrase(new_word_node, split_phrase[1:], key_words)
+        new_word_node = WordNode(next_word)
+        node.children[next_word] = new_word_node
+        add_phrase(new_word_node, split_phrase[1:])
 
 
 def get_phrases(node, prepend_str, award_names):
@@ -494,22 +484,22 @@ def get_phrases(node, prepend_str, award_names):
         get_phrases(node.children[child], new_prepend_str, award_names)
 
 
-def find_award_names(award_tree, tweet, key_words):
+def find_award_names(award_tree, tweet):
     text = tweet.text
     pattern = r'([Bb]est( [A-Za-z]+)+)'
-    aux_pattern = r'(\-( [A-Za-z]+)+)'
+    # aux_pattern = r'(\-( [A-Za-z]+)+)'
     matches = re.findall(pattern, text)
-    aux_matches = re.findall(aux_pattern, text)
+    # aux_matches = re.findall(aux_pattern, text)
     aux_words = []
-    for aux_match in aux_matches:
-        aux_split = aux_match[0][2:].split(' ')
-        for word in aux_split:
-            if word.lower() in key_words.keys() and key_words[word.lower()] > 100:
-                aux_words += aux_split
-                break
+    # for aux_match in aux_matches:
+    #     aux_split = aux_match[0][2:].split(' ')
+    #     for word in aux_split:
+    #         if word.lower in award_words:
+    #             aux_words += aux_split
+    #             break
     for match in matches:
         split = match[0].split(' ')[1:] + aux_words
-        add_phrase(award_tree, split, key_words)
+        add_phrase(award_tree, split)
 
 
 def main():
@@ -535,9 +525,14 @@ def main():
         print('No processed data found, exiting program')
         sys.exit()
     official_awards = get_awards_by_year(year)
+    key_words = set()  # only used in finding nominees, winners, and presenters!
+    for award in official_awards:
+        split = award.split(' ')
+        for word in split:
+            if len(word) > 1 and not nlp.vocab[word].is_stop:
+                key_words.add(word)
 
     potential_hosts = []
-    key_words = {}
     award_tree = WordNode('best')
     award_names = {}
     noms_split = {}
@@ -571,7 +566,7 @@ def main():
         nlp.vocab[word].is_stop = True
 
     num_tweets = len(data)  # total number of tweets
-    n = 100000  # maximum number of tweets to check
+    n = 1000  # maximum number of tweets to check
     skip = int(num_tweets / n)  # number of tweets to skip per selection
     if skip != 0:
         data = data[0::skip]  # select n evenly spaced tweets from data
@@ -600,7 +595,7 @@ def main():
             # find awards
             if token == 'best' and not should_flag:
                 # award_tweets.append(tweet)
-                find_award_names(award_tree, tweet, key_words)
+                find_award_names(award_tree, tweetj)
                 # for ent in tweet.ents:
                 #     if len(ent.text) > 4 and ent.text[:4].lower() == 'best':
                 #         award_names.append(ent.text.lower())
