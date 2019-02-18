@@ -97,7 +97,7 @@ def find_nominees(year, unique_nominees, counts, winners):
     nominees = {}
     print('start')
     # print(counts)
-    #print(unique_nominees)
+    # print(unique_nominees)
     print('end')
     
     for award in official_awards:
@@ -577,6 +577,7 @@ def main():
     for award in possible_award_names:
         print(award)
     print(key_words)
+    print(len(key_words))
 
     sortbestdress = sorted(set(bestdress), key=bestdress.count)
     sortworstdress = sorted(set(worstdress), key=worstdress.count)
