@@ -10,4 +10,5 @@ __pycache__/
 answer2013.json
 answer2015.json
 gg_awards.py
+gg_api_v2.py
 gg_api_v3.py

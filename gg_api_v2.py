@@ -595,7 +595,7 @@ def main():
             # find awards
             if token == 'best' and not should_flag:
                 # award_tweets.append(tweet)
-                find_award_names(award_tree, tweetj)
+                find_award_names(award_tree, tweet)
                 # for ent in tweet.ents:
                 #     if len(ent.text) > 4 and ent.text[:4].lower() == 'best':
                 #         award_names.append(ent.text.lower())
@@ -661,13 +661,14 @@ def main():
     lstworstdress = sorted(set(dressed['worst']), key=dressed['worst'].count)
     contraversaldressed = 'no one'
     diff = 100
-    for i in range(1, len(lstbestdress)):
-        for j in range(1, 10):
-            if lstbestdress[-i] == lstworstdress[-j] and diff > abs(i - j):
-                diff = abs(i - j)
-                contraversaldressed = lstbestdress[-i]
-    bestdressed = lstbestdress[-1]
-    worstdressed = lstworstdress[-1]
+    if lstbestdress and lstworstdress:
+        for i in range (1,len(lstbestdress)):
+            for j in range (1, len(lstworstdress)):
+                if lstbestdress[-i]==lstworstdress[-j] and diff>abs(i-j):
+                    diff=abs(i-j)
+                    contraversaldressed=lstbestdress[-i]
+        bestdressed = lstbestdress[-1]
+        worstdressed = lstworstdress[-1]
 
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)

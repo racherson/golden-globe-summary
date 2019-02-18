@@ -1,0 +1,132 @@
+Hosts: amy poehler; 
+
+Award: cecil b. demille award
+Presenters: Robert Downey; Jodie Foster; 
+Nominees: jodiefoster; half; paranorman; the new season; jon hamm; tonight;  talking; 
+Winner: Lena Dunham
+
+Award: best motion picture - drama
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actress in a motion picture - drama
+Presenters: Bill Clinton; 
+Nominees: claire danes; first; django unchained; 
+Winner: Claire Danes
+
+Award: best performance by an actor in a motion picture - drama
+Presenters: 
+Nominees: 
+Winner: And Al
+
+Award: best motion picture - comedy or musical
+Presenters: 
+Nominees: only two; 
+Winner: Don Cheadle
+
+Award: best performance by an actress in a motion picture - comedy or musical
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actor in a motion picture - comedy or musical
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best animated feature film
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best foreign language film
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actress in a supporting role in a motion picture
+Presenters: 
+Nominees: hmmmmm; ben affleck; parksandrec; 
+Winner: Ben Affleck
+
+Award: best performance by an actor in a supporting role in a motion picture
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best director - motion picture
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best screenplay - motion picture
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best original score - motion picture
+Presenters: 
+Nominees: 
+Winner: Canadian Mychael
+
+Award: best original song - motion picture
+Presenters: 
+Nominees: 
+Winner: Maggie Smith
+
+Award: best television series - drama
+Presenters: 
+Nominees: 
+Winner: Congrats Game
+
+Award: best performance by an actress in a television series - drama
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actor in a television series - drama
+Presenters: 
+Nominees: 
+Winner: Kevin Costner
+
+Award: best television series - comedy or musical
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actress in a television series - comedy or musical
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actor in a television series - comedy or musical
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best mini-series or motion picture made for television
+Presenters: 
+Nominees: taylor; lol; ben affleck; turbo; 
+Winner: Silver Linings
+
+Award: best performance by an actress in a mini-series or motion picture made for television
+Presenters: 
+Nominees: 
+Winner: None
+
+Award: best performance by an actor in a mini-series or motion picture made for television
+Presenters: 
+Nominees: 
+Winner: Hugh Jackman
+
+Award: best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
+Presenters: 
+Nominees: jodie fosters; gamechange; like min or; amy; trader joes; anne hathaway; ben afflack; tina; pb; 
+Winner: Streep Joke
+
+Award: best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
+Presenters: 
+Nominees: 
+Winner: None
+

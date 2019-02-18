@@ -421,6 +421,8 @@ def print_answer(year, answer):
         file.write('\nNominees: ')
         for name in nominees:
             file.write(name + '; ')
+        if winner is None:
+            winner = 'None'
         file.write('\nWinner: ' + winner + '\n\n')
     file.close()
     print('Hosts:\n')
@@ -445,8 +447,8 @@ def print_answer(year, answer):
 
 def best_and_worst(year, best_dress, worst_dress):
     file = open('readableanswer' + str(year) + '.txt', 'a')
-    file.write('Best Dressed: '  + best_dress + '\n')
-    file.write('Worst Dressed: '  + worst_dress + '\n')
+    file.write('Best Dressed: ' + best_dress + '\n')
+    file.write('Worst Dressed: ' + worst_dress + '\n')
     file.close()
 
 
@@ -566,7 +568,7 @@ def main():
         nlp.vocab[word].is_stop = True
 
     num_tweets = len(data)  # total number of tweets
-    n = 1000  # maximum number of tweets to check
+    n = 250000  # maximum number of tweets to check
     skip = int(num_tweets / n)  # number of tweets to skip per selection
     if skip != 0:
         data = data[0::skip]  # select n evenly spaced tweets from data
@@ -595,7 +597,7 @@ def main():
             # find awards
             if token == 'best' and not should_flag:
                 # award_tweets.append(tweet)
-                find_award_names(award_tree, tweetj)
+                find_award_names(award_tree, tweet)
                 # for ent in tweet.ents:
                 #     if len(ent.text) > 4 and ent.text[:4].lower() == 'best':
                 #         award_names.append(ent.text.lower())
@@ -661,13 +663,17 @@ def main():
     lstworstdress = sorted(set(dressed['worst']), key=dressed['worst'].count)
     contraversaldressed = 'no one'
     diff = 100
-    for i in range(1, len(lstbestdress)):
-        for j in range(1, 10):
-            if lstbestdress[-i] == lstworstdress[-j] and diff > abs(i - j):
-                diff = abs(i - j)
-                contraversaldressed = lstbestdress[-i]
-    bestdressed = lstbestdress[-1]
-    worstdressed = lstworstdress[-1]
+    if lstbestdress and lstworstdress:
+        for i in range (1,len(lstbestdress)):
+            for j in range (1, len(lstworstdress)):
+                if lstbestdress[-i]==lstworstdress[-j] and diff>abs(i-j):
+                    diff=abs(i-j)
+                    contraversaldressed=lstbestdress[-i]
+        bestdressed = lstbestdress[-1]
+        worstdressed = lstworstdress[-1]
+    else:
+        bestdressed = 'no one'
+        worstdressed = 'no one'
 
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
