@@ -8,15 +8,58 @@ import time
 from spacy.tokenizer import Tokenizer
 from difflib import SequenceMatcher
 
-OFFICIAL_AWARDS_1315 = ['cecil b. demille award', 'best motion picture - drama', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best motion picture - comedy or musical', 'best performance by an actress in a motion picture - comedy or musical', 'best performance by an actor in a motion picture - comedy or musical', 'best animated feature film', 'best foreign language film', 'best performance by an actress in a supporting role in a motion picture', 'best performance by an actor in a supporting role in a motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best television series - comedy or musical', 'best performance by an actress in a television series - comedy or musical', 'best performance by an actor in a television series - comedy or musical', 'best mini-series or motion picture made for television', 'best performance by an actress in a mini-series or motion picture made for television', 'best performance by an actor in a mini-series or motion picture made for television', 'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television', 'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
-OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - musical or comedy', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best performance by an actress in a motion picture - musical or comedy', 'best performance by an actor in a motion picture - musical or comedy', 'best performance by an actress in a supporting role in any motion picture', 'best performance by an actor in a supporting role in any motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best motion picture - animated', 'best motion picture - foreign language', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best television series - musical or comedy', 'best television limited series or motion picture made for television', 'best performance by an actress in a limited series or a motion picture made for television', 'best performance by an actor in a limited series or a motion picture made for television', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best performance by an actress in a television series - musical or comedy', 'best performance by an actor in a television series - musical or comedy', 'best performance by an actress in a supporting role in a series, limited series or motion picture made for television', 'best performance by an actor in a supporting role in a series, limited series or motion picture made for television', 'cecil b. demille award']
+OFFICIAL_AWARDS_1315 = ['cecil b. demille award', 'best motion picture - drama',
+                        'best performance by an actress in a motion picture - drama',
+                        'best performance by an actor in a motion picture - drama',
+                        'best motion picture - comedy or musical',
+                        'best performance by an actress in a motion picture - comedy or musical',
+                        'best performance by an actor in a motion picture - comedy or musical',
+                        'best animated feature film', 'best foreign language film',
+                        'best performance by an actress in a supporting role in a motion picture',
+                        'best performance by an actor in a supporting role in a motion picture',
+                        'best director - motion picture', 'best screenplay - motion picture',
+                        'best original score - motion picture', 'best original song - motion picture',
+                        'best television series - drama',
+                        'best performance by an actress in a television series - drama',
+                        'best performance by an actor in a television series - drama',
+                        'best television series - comedy or musical',
+                        'best performance by an actress in a television series - comedy or musical',
+                        'best performance by an actor in a television series - comedy or musical',
+                        'best mini-series or motion picture made for television',
+                        'best performance by an actress in a mini-series or motion picture made for television',
+                        'best performance by an actor in a mini-series or motion picture made for television',
+                        'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television',
+                        'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
+OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - musical or comedy',
+                        'best performance by an actress in a motion picture - drama',
+                        'best performance by an actor in a motion picture - drama',
+                        'best performance by an actress in a motion picture - musical or comedy',
+                        'best performance by an actor in a motion picture - musical or comedy',
+                        'best performance by an actress in a supporting role in any motion picture',
+                        'best performance by an actor in a supporting role in any motion picture',
+                        'best director - motion picture', 'best screenplay - motion picture',
+                        'best motion picture - animated', 'best motion picture - foreign language',
+                        'best original score - motion picture', 'best original song - motion picture',
+                        'best television series - drama', 'best television series - musical or comedy',
+                        'best television limited series or motion picture made for television',
+                        'best performance by an actress in a limited series or a motion picture made for television',
+                        'best performance by an actor in a limited series or a motion picture made for television',
+                        'best performance by an actress in a television series - drama',
+                        'best performance by an actor in a television series - drama',
+                        'best performance by an actress in a television series - musical or comedy',
+                        'best performance by an actor in a television series - musical or comedy',
+                        'best performance by an actress in a supporting role in a series, limited series or motion picture made for television',
+                        'best performance by an actor in a supporting role in a series, limited series or motion picture made for television',
+                        'cecil b. demille award']
 
 nlp = spacy.load('en_core_web_sm')
 nernlp = spacy.load('en_core_web_sm', disable=['parser', 'tagger'])
 tokenizer = Tokenizer(nlp.vocab)
 custom_stop_words = [
-        'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg',
-        'Golden Globe.', 'Golden Globe']
+    'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg',
+    'Golden Globe.', 'Golden Globe']
+
+
 # key_words = ['best', 'motion', 'picture', 'drama', 'performance', 'actress', 'actor', 'comedy',  'musical',
 #              'animated', 'feature', 'film', 'foreign', 'language', 'supporting', 'role',
 #              'director', 'screenplay', 'original', 'score', 'song', 'television', 'series', 'miniseries', 'mini', 'mini-series',
@@ -32,53 +75,55 @@ def get_first_and_last(hosts, index):
         limit = len(hosts) + index + 1
     else:
         limit = index + 1
-    max_limit = 20 # max number of additional names to check
+    max_limit = 20  # max number of additional names to check
     while count < min(limit, max_limit):
-        next_name = hosts[index-count]
+        next_name = hosts[index - count]
         split_next_name = next_name.split(' ')
         if split_next_name[0] == split_name[0]:
             return next_name
         count += 1
     return name
 
+
 def find_dressed(dressed, tweet, key_words):
-    posdress=dressed['best']
-    negdress=dressed['worst']
-    #dressed={}
-    names=find_names(tweet,key_words)
-    if len(names)>0:
+    posdress = dressed['best']
+    negdress = dressed['worst']
+    # dressed={}
+    names = find_names(tweet, key_words)
+    if len(names) > 0:
         for token in tweet:
-            word=token.text.lower()
-                #print(word)
-            if word=='ugly' or word=='ew' or word=='bad' or word=='not' or word=='worst':
+            word = token.text.lower()
+            # print(word)
+            if word == 'ugly' or word == 'ew' or word == 'bad' or word == 'not' or word == 'worst':
                 for pers in names:
                     negdress.append(pers)
                 break
-            if word=='beauty' or word=='pretty' or word=='gorgeous' or word=='best':
-                #print('pos')
+            if word == 'beauty' or word == 'pretty' or word == 'gorgeous' or word == 'best':
+                # print('pos')
                 for pers in names:
                     posdress.append(pers)
                 break
-    dressed['best']=posdress
-    dressed['worst']=negdress
+    dressed['best'] = posdress
+    dressed['worst'] = negdress
     return dressed
+
 
 def find_hosts(unique_hosts, counts):
     hosts = []
     if not unique_hosts:
         return hosts
-    first_host = get_first_and_last(unique_hosts, -1) # make sure to find the first and last name
+    first_host = get_first_and_last(unique_hosts, -1)  # make sure to find the first and last name
     split_first_host = first_host.split(' ')
     first_host_count = counts[-1]
     hosts.append(first_host)
     # if the second highest name doesn't have the same first name and is within a percentage, add it too
     count = 1
-    limit = 5 # max number of additional potential hosts to check
+    limit = 5  # max number of additional potential hosts to check
     similarity_coefficient = 0.6
     while count < min(len(unique_hosts), limit):
-        name = get_first_and_last(unique_hosts, -1-count)
+        name = get_first_and_last(unique_hosts, -1 - count)
         split_name = name.split(' ')
-        similarity = counts[-1-count] / first_host_count
+        similarity = counts[-1 - count] / first_host_count
         if split_name[0] != split_first_host[0] and similarity > similarity_coefficient:
             hosts.append(name)
             break
@@ -89,7 +134,7 @@ def find_hosts(unique_hosts, counts):
 def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
         of this function or what it returns.'''
-    #answer = load_data('answer2013.json')
+    # answer = load_data('answer2013.json')
     answer = load_data('answer' + str(year) + '.json')
     hosts = answer['hosts']
     return hosts
@@ -106,27 +151,26 @@ def find_awards(unique_awards, counts):
 def get_awards(year):
     '''Awards is a list of strings. Do NOT change the name
     of this function or what it returns.'''
-    #answer = load_data('answer2013.json')
+    # answer = load_data('answer2013.json')
     answer = load_data('answer' + str(year) + '.json')
     awards = answer['awards']
     return awards
 
 
 def find_nominees(year, unique_nominees, counts, winners):
-    
     official_awards = get_awards_by_year(year)
     nominees = {}
     print('start')
     # print(counts)
     # print(unique_nominees)
     print('end')
-    
+
     for award in official_awards:
         lst = list()
         mentions = counts[award]
         award_noms = unique_nominees[award]
         if len(mentions) > 1:
-            if (mentions[-1] / 2) >= mentions[-2]: # and mentions[-1] > 4:
+            if (mentions[-1] / 2) >= mentions[-2]:  # and mentions[-1] > 4:
                 cutoff = mentions[-2] / 2
             else:
                 cutoff = mentions[-1] / 2
@@ -140,7 +184,7 @@ def find_nominees(year, unique_nominees, counts, winners):
                 if mentions[-i] >= cutoff:
                     # print('hi')
                     curr = award_noms[-i]
-                    split_name = curr.split(' ')                        
+                    split_name = curr.split(' ')
                     if not award_noms[-i] == winners[award]:
                         for x in lst:
                             if SequenceMatcher(None, x, curr).ratio() >= 0.8:
@@ -165,7 +209,7 @@ def get_nominees(year):
     '''Nominees is dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change
     the name of this function or what it returns.'''
-    #answer = load_data('answer2013.json')
+    # answer = load_data('answer2013.json')
     answer = load_data('answer' + str(year) + '.json')
     award_data = answer['award_data']
     nominees = {}
@@ -206,7 +250,7 @@ def get_winner(year):
     '''Winners is a dictionary with the hard coded award
     names as keys, and each entry containing a single string.
     Do NOT change the name of this function or what it returns.'''
-    #answer = load_data('answer2013.json')
+    # answer = load_data('answer2013.json')
     answer = load_data('answer' + str(year) + '.json')
     award_data = answer['award_data']
     winners = {}
@@ -229,10 +273,10 @@ def find_presenters(year, unique_presenters, counts):
             first_presenter_count = counts[award][-1]
             presenters[award] = [first_presenter]
             count = 1
-            limit = 10 # max number of additional potential presenters to check
+            limit = 10  # max number of additional potential presenters to check
             while count < min(len(award_presenters), limit):
-                presenter = award_presenters[-1-count]
-                if counts[award][-1-count] / first_presenter_count > similarity_coefficient:
+                presenter = award_presenters[-1 - count]
+                if counts[award][-1 - count] / first_presenter_count > similarity_coefficient:
                     presenters[award].append(presenter)
                 count += 1
     return presenters
@@ -242,7 +286,7 @@ def get_presenters(year):
     '''Presenters is a dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change the
     name of this function or what it returns.'''
-    #answer = load_data('answer2013.json')
+    # answer = load_data('answer2013.json')
     answer = load_data('answer' + str(year) + '.json')
     award_data = answer['award_data']
     presenters = {}
@@ -292,7 +336,8 @@ def extract_text(tweets):
 
 # return True if we want to append token, otherwise False
 def token_filter(token):
-    return not (token.is_punct or token.is_space or token.is_stop or len(token.text) <= 3 or '@' in token.text or '#' in token.text)
+    return not (token.is_punct or token.is_space or token.is_stop or len(
+        token.text) <= 3 or '@' in token.text or '#' in token.text)
 
 
 # return True if we want to append entity, otherwise False
@@ -368,6 +413,22 @@ def form_answer(year, hosts, awards, nominees, winners, presenters):
 
 def print_answer(year, answer):
     official_awards = get_awards_by_year(year)
+    file = open('readableanswer' + str(year) + '.txt', 'w')
+    file.write('Hosts: ')
+    for name in answer['hosts']:
+        file.write(name + '; ')
+    file.write('\n\n')
+    for award in official_awards:
+        file.write('Award: ' + award)
+        nominees, winner, presenters = answer['award_data'][award]
+        file.write('\nPresenters: ')
+        for name in presenters:
+            file.write(name + '; ')
+        file.write('\nNominees: ')
+        for name in nominees:
+            file.write(name + '; ')
+        file.write('\nWinner: ' + winner + '\n\n')
+    file.close()
     print('Hosts:\n')
     print(answer['hosts'])
 
@@ -387,6 +448,12 @@ def print_answer(year, answer):
         print(presenters)
         print('')
 
+
+def best_and_worst(year, best_dress, worst_dress):
+    file = open('readableanswer' + str(year) + '.txt', 'a')
+    file.write('Best Dressed: '  + best_dress + '\n')
+    file.write('Worst Dressed: '  + worst_dress + '\n')
+    file.close()
 
 # phrase tree implementation
 class WordNode:
@@ -451,7 +518,7 @@ def main():
     and then run gg_api.main(). This is the second thing the TA will
     run when grading. Do NOT change the name of this function or what it returns.'''
     pre_ceremony()
-    print ('Starting main now...')
+    print('Starting main now...')
     start_time = time.time()
 
     data = None
@@ -485,12 +552,12 @@ def main():
     possible_presenters = {}
     possible_noms = {}
     possible_winners = {}
-    bestdress=[]
-    worstdress=[]
-    dressed=dict()
-    dressed['worst']=list()
-    dressed['best']=list()
-    curraward='misc'
+    bestdress = []
+    worstdress = []
+    dressed = dict()
+    dressed['worst'] = list()
+    dressed['best'] = list()
+    curraward = 'misc'
 
     for award in official_awards:
         noms_split[award] = []
@@ -543,7 +610,7 @@ def main():
                 # presenter_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if a != "":
-                    curraward=a
+                    curraward = a
                     presenters_split[a] += find_names(tweet, key_words)
                 else:
                     presenters_split['misc'] += find_names(tweet, key_words)
@@ -566,16 +633,17 @@ def main():
                         winners_split['misc'] += find_names(tweet, key_words)
                 # break
             # find nominees
-            if token == 'nominate' or token == 'nominee' or token == 'deserve' or token == 'rob' or token == "lose": # or token == 'lost' or token == "lose":
+            if token == 'nominate' or token == 'nominee' or token == 'deserve' or token == 'rob' or token == "lose":  # or token == 'lost' or token == "lose":
                 # nominee_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if a != '':
                     curraward = a
                     lst = nomfilter(tweet, key_words)
                     noms_split[a] += lst
-                else: noms_split[curraward] += nomfilter(tweet, key_words)
-            if token=='beauty' or token=='pretty' or token=='dress' or token=='ugly':
-                dressed=find_dressed(dressed, tweet,key_words)
+                else:
+                    noms_split[curraward] += nomfilter(tweet, key_words)
+            if token == 'beauty' or token == 'pretty' or token == 'dress' or token == 'ugly':
+                dressed = find_dressed(dressed, tweet, key_words)
         if n == 0:
             break
         n -= 1
@@ -594,26 +662,27 @@ def main():
     print(key_words)
     print(len(key_words))
 
-    lstbestdress=sorted(set(dressed['best']), key=dressed['best'].count)
-    lstworstdress=sorted(set(dressed['worst']), key=dressed['worst'].count)
-    contraversaldressed='no one'
-    diff=100
-    for i in range (1,len(lstbestdress)):
-        for j in range (1, 10):
-            if lstbestdress[-i]==lstworstdress[-j] and diff>abs(i-j):
-                diff=abs(i-j)
-                contraversaldressed=lstbestdress[-i]
-    bestdressed=lstbestdress[-1]
-    worstdressed=lstworstdress[-1]
-    
+    lstbestdress = sorted(set(dressed['best']), key=dressed['best'].count)
+    lstworstdress = sorted(set(dressed['worst']), key=dressed['worst'].count)
+    contraversaldressed = 'no one'
+    diff = 100
+    for i in range(1, len(lstbestdress)):
+        for j in range(1, 10):
+            if lstbestdress[-i] == lstworstdress[-j] and diff > abs(i - j):
+                diff = abs(i - j)
+                contraversaldressed = lstbestdress[-i]
+    bestdressed = lstbestdress[-1]
+    worstdressed = lstworstdress[-1]
 
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
         unique_winners[award] = sorted(set(winners_split[award]), key=winners_split[award].count)
         unique_presenters[award] = sorted(set(presenters_split[award]), key=presenters_split[award].count)
         noms_counts[award] = [noms_split[award].count(possible_nom) for possible_nom in unique_noms[award]]
-        winners_counts[award] = [winners_split[award].count(possible_winner) for possible_winner in unique_winners[award]]
-        presenters_counts[award] = [presenters_split[award].count(possible_pres) for possible_pres in unique_presenters[award]]
+        winners_counts[award] = [winners_split[award].count(possible_winner) for possible_winner in
+                                 unique_winners[award]]
+        presenters_counts[award] = [presenters_split[award].count(possible_pres) for possible_pres in
+                                    unique_presenters[award]]
         # possible_noms[award] = list(zip(unique_noms[award], noms_counts[award]))
         # possible_winners[award] = list(zip(unique_winners[award], winners_counts[award]))
         # possible_presenters[award] = list(zip(unique_presenters[award], presenters_counts[award]))
@@ -624,8 +693,9 @@ def main():
     nominees = find_nominees(data_year, unique_noms, noms_counts, winners)
     presenters = find_presenters(data_year, unique_presenters, presenters_counts)
 
-    print ('Calling form_answer...')
+    print('Calling form_answer...')
     form_answer(data_year, hosts, awards, nominees, winners, presenters)
+    best_and_worst(data_year, bestdressed, worstdressed)
     end_time = time.time()
     print("Main complete")
     print('Time: ', str(end_time - start_time))
