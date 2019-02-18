@@ -299,7 +299,8 @@ def print_answer(year, answer):
     print(answer['hosts'])
 
     print('\nAwards:\n')
-    print(answer['awards'])
+    for award in answer['awards']:
+        print(award)
 
     print('\nAward Data:\n')
     for award in official_awards:
@@ -314,12 +315,52 @@ def print_answer(year, answer):
         print('')
 
 
+# phrase tree implementation
+class WordNode:
+    def __init__(self, word):
+        self.word = word
+        self.children = {}
+        self.count = 0
+
+
+def add_phrase(node, split_phrase):
+    if len(split_phrase) == 0:
+        node.count += 1
+        return
+    next_word = split_phrase[0]
+    if next_word in node.children.keys():
+        add_phrase(node.children[next_word], split_phrase[1:])
+    else:
+        new_word_node = WordNode(next_word)
+        node.children[next_word] = new_word_node
+        add_phrase(new_word_node, split_phrase[1:])
+
+
+def get_phrases(node, prepend_str, award_names):
+    if not prepend_str:
+        new_prepend_str = node.word
+    else:
+        new_prepend_str = prepend_str + ' ' + node.word
+    if node.count > 0:
+        award_names[new_prepend_str] = node.count
+    for child in node.children.keys():
+        get_phrases(node.children[child], new_prepend_str, award_names)
+
+
+def find_award_names(award_tree, tweet):
+    text = tweet.text
+    pattern = r'(?=((?<![A-Za-z])([Bb]est)( [A-Za-z]+)+))'
+    matches = re.findall(pattern, text)
+    for match in matches:
+        split = match[0].split()
+        add_phrase(award_tree, split[1:])
+
+
 def main():
     '''This function calls your program. Typing "python gg_api.py"
     will run this function. Or, in the interpreter, import gg_api
     and then run gg_api.main(). This is the second thing the TA will
-    run when grading. Do NOT change the name of this function or
-    what it returns.'''
+    run when grading. Do NOT change the name of this function or what it returns.'''
     pre_ceremony()
     print ('Starting main now...')
     start_time = time.time()
@@ -340,7 +381,8 @@ def main():
     official_awards = get_awards_by_year(year)
 
     potential_hosts = []
-    award_names = []
+    award_names = {}
+    award_tree = WordNode('best')
     noms_split = {}
     winners_split = {}
     presenters_split = {}
@@ -394,9 +436,10 @@ def main():
             # awards checking
             if token == 'best' and not should_flag:
                 # award_tweets.append(tweet)
-                for ent in tweet.ents:
-                    if len(ent.text) > 4 and ent.text[:4].lower() == 'best':
-                        award_names.append(ent.text.lower())
+                find_award_names(award_tree, tweet)
+                # for ent in tweet.ents:
+                #     if len(ent.text) > 4 and ent.text[:4].lower() == 'best':
+                #         award_names.append(ent.text.lower())
                 # break # just for performance while developing
             if token == 'present':
                 # presenter_tweets.append(tweet)
@@ -406,7 +449,7 @@ def main():
                 else:
                     presenters_split['misc'] += find_names(tweet)
                 # break
-            if token == 'win' or token == 'congrats' or token == 'congratulations':
+            if token == 'win' or token == 'congrats' or token == 'congratulations' and not should_flag:
                 # winner_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if a != "":
@@ -430,9 +473,12 @@ def main():
     hosts_counts = [potential_hosts.count(host) for host in unique_hosts]
     # possible_hosts = list(zip(unique_hosts, hosts_counts))
 
-    unique_award_names = sorted(set(award_names), key=award_names.count)
-    awards_counts = [award_names.count(award_name) for award_name in unique_award_names]
+    get_phrases(award_tree, '', award_names)
+    unique_award_names = sorted(set(award_names.keys()), key=lambda x: award_names[x])
+    awards_counts = [award_names[award_name] for award_name in unique_award_names]
     # possible_award_names = list(zip(unique_award_names, awards_counts))
+    # for award in possible_award_names:
+    #     print(award)
 
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
