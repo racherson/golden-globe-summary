@@ -7,10 +7,6 @@ import sys
 import time
 from spacy.tokenizer import Tokenizer
 from difflib import SequenceMatcher
-# unused import functions
-# import string
-# from difflib import SequenceMatcher
-# from pprint import pprint
 
 OFFICIAL_AWARDS_1315 = ['cecil b. demille award', 'best motion picture - drama', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best motion picture - comedy or musical', 'best performance by an actress in a motion picture - comedy or musical', 'best performance by an actor in a motion picture - comedy or musical', 'best animated feature film', 'best foreign language film', 'best performance by an actress in a supporting role in a motion picture', 'best performance by an actor in a supporting role in a motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best television series - comedy or musical', 'best performance by an actress in a television series - comedy or musical', 'best performance by an actor in a television series - comedy or musical', 'best mini-series or motion picture made for television', 'best performance by an actress in a mini-series or motion picture made for television', 'best performance by an actor in a mini-series or motion picture made for television', 'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television', 'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
 OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - musical or comedy', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best performance by an actress in a motion picture - musical or comedy', 'best performance by an actor in a motion picture - musical or comedy', 'best performance by an actress in a supporting role in any motion picture', 'best performance by an actor in a supporting role in any motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best motion picture - animated', 'best motion picture - foreign language', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best television series - musical or comedy', 'best television limited series or motion picture made for television', 'best performance by an actress in a limited series or a motion picture made for television', 'best performance by an actor in a limited series or a motion picture made for television', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best performance by an actress in a television series - musical or comedy', 'best performance by an actor in a television series - musical or comedy', 'best performance by an actress in a supporting role in a series, limited series or motion picture made for television', 'best performance by an actor in a supporting role in a series, limited series or motion picture made for television', 'cecil b. demille award']
@@ -21,11 +17,10 @@ tokenizer = Tokenizer(nlp.vocab)
 custom_stop_words = [
         'Golden Globes', 'goldenglobes', '@', 'golden globes', 'RT', 'GoldenGlobes', '\n', '#', "#GoldenGlobes", 'gg',
         'Golden Globe.', 'Golden Globe']
-key_words = ['best', 'motion', 'picture', 'drama', 'performance', 'actress', 'actor', 'comedy',  'musical',
-             'animated', 'feature', 'film', 'foreign', 'language', 'supporting', 'role',
-             'director', 'screenplay', 'original', 'score', 'song', 'television', 'series', 'miniseries', 'mini', 'mini-series',
-             'cecil', 'demille', 'award', 'tv', 'golden', 'globe', 'hollywood', 'press', 'association']
-# can dynamically create key_words from the official awards to improve generalization
+# key_words = ['best', 'motion', 'picture', 'drama', 'performance', 'actress', 'actor', 'comedy',  'musical',
+#              'animated', 'feature', 'film', 'foreign', 'language', 'supporting', 'role',
+#              'director', 'screenplay', 'original', 'score', 'song', 'television', 'series', 'miniseries', 'mini', 'mini-series',
+#              'cecil', 'demille', 'award', 'tv', 'golden', 'globe', 'hollywood', 'press', 'association']
 
 def get_first_and_last(hosts, index):
     name = hosts[index]
@@ -51,11 +46,11 @@ def find_hosts(unique_hosts, counts):
     hosts = []
     if not unique_hosts:
         return hosts
-    first_host = get_first_and_last(unique_hosts, -1) # make sure to find the first and last name of this host
+    first_host = get_first_and_last(unique_hosts, -1) # make sure to find the first and last name
     split_first_host = first_host.split(' ')
     first_host_count = counts[-1]
     hosts.append(first_host)
-    # if the second highest is not the same first name and within a percentage, add it too
+    # if the second highest name doesn't have the same first name and is within a percentage, add it too
     count = 1
     limit = 5 # max number of additional potential hosts to check
     similarity_coefficient = 0.6
@@ -96,50 +91,54 @@ def get_awards(year):
     return awards
 
 
-def find_nominees(year, unique_nominees, counts,winners):
+def find_nominees(year, unique_nominees, counts, winners):
     
     official_awards = get_awards_by_year(year)
     nominees = {}
     print('start')
-    print(counts)
+    # print(counts)
     #print(unique_nominees)
     print('end')
     
     for award in official_awards:
-        lst=list()
-        mentions= counts[award]
+        lst = list()
+        mentions = counts[award]
         award_noms = unique_nominees[award]
-        if len(mentions)>1:
-            if (mentions[-1]/2)>=mentions[-2]:# and mentions[-1]>4:
-                cutoff=mentions[-2]/2
-            else: cutoff=mentions[-1]/2
-            #if cutoff<=1:
-            #    cutoff=2
+        if len(mentions) > 1:
+            if (mentions[-1] / 2) >= mentions[-2]: # and mentions[-1] > 4:
+                cutoff = mentions[-2] / 2
+            else:
+                cutoff = mentions[-1] / 2
+            # if cutoff <= 1:
+            #     cutoff = 2
             print(award)
             print('cutoff')
             print(cutoff)
-            for i in range(1,len(mentions)):
-                simflag=False
+            for i in range(1, len(mentions)):
+                simflag = False
                 if mentions[-i] >= cutoff:
-                    print('hi')
-                    curr=award_noms[-i]
+                    # print('hi')
+                    curr = award_noms[-i]
                     split_name = curr.split(' ')                        
-                    if not award_noms[-i]== winners[award]:                            
+                    if not award_noms[-i] == winners[award]:
                         for x in lst:
-                            if SequenceMatcher(None, x, curr).ratio()>=.8:
-                                simflag=True
-                            xsplit=x.split(' ')
+                            if SequenceMatcher(None, x, curr).ratio() >= 0.8:
+                                simflag = True
+                            xsplit = x.split(' ')
                             for word in xsplit:
                                 for newword in split_name:
-                                    if SequenceMatcher(None, newword, word).ratio()>=.85:
-                                        simflag=True
-                        if simflag==False:
+                                    if SequenceMatcher(None, newword, word).ratio() >= 0.85:
+                                        simflag = True
+                        if simflag == False:
                             lst.append(award_noms[-i])
-                else: break
+                else:
+                    break
         else:
-            lst.append(award_noms[-1])
-        nominees[award]=lst
+            if award_noms:
+                lst.append(award_noms[-1])
+        nominees[award] = lst
     return nominees
+
 
 def get_nominees(year):
     '''Nominees is dictionary with the hard coded award
@@ -153,19 +152,21 @@ def get_nominees(year):
         nominees[award] = award_data[award][0]
     return nominees
 
-def nomfilter(tweet):
-    lst=list()
+
+def nomfilter(tweet, key_words):
+    lst = list()
     for ent in tweet.ents:
-        ignoreflag=False
-        txt=ent.text
-        txt=re.sub(r'[^a-zA-Z ]+', '', txt)
+        ignoreflag = False
+        txt = ent.text
+        txt = re.sub(r'[^a-zA-Z ]+', '', txt)
         for x in txt.split(' '):
-            if (x in custom_stop_words or x.lower() in key_words):
-                ignoreflag=True
-        if ignoreflag==False and not (txt =='' or txt==' '):
-            stri=txt.lower()
+            if x in custom_stop_words or (x.lower() in key_words.keys() and key_words[x.lower()] > 100):
+                ignoreflag = True
+        if not ignoreflag and not (txt == '' or txt == ' '):
+            stri = txt.lower()
             lst.append(stri)
     return lst
+
 
 def find_winners(year, unique_winners, counts):
     official_awards = get_awards_by_year(year)
@@ -197,7 +198,7 @@ def find_presenters(year, unique_presenters, counts):
     official_awards = get_awards_by_year(year)
     presenters = {}
     # get presenters
-    similarity_coefficient = 0.6
+    similarity_coefficient = 0.8
     for award in official_awards:
         award_presenters = unique_presenters[award]
         if len(award_presenters) == 0:
@@ -238,12 +239,13 @@ def pre_ceremony():
     tweets = {}
     for year in range(2000, 2020):
         try:
-            print('Checking for  ' + str(year) + ' data')
+            # print('Checking for  ' + str(year) + ' data')
             data = load_data('gg' + str(year) + '.json')
             tweets[year] = extract_text(data)
-            print('Found ' + str(year) + ' data')
+            # print('Found ' + str(year) + ' data')
         except:
-            print(str(year) + ' data not found')
+            pass
+            # print(str(year) + ' data not found')
     for year in tweets.keys():
         with open('processed_gg' + str(year) + '.json', 'w') as f:
             json.dump(tweets[year], f)
@@ -251,10 +253,8 @@ def pre_ceremony():
     return
 
 
-# load json file as dictionary
-# file_name: 'gg20XX.json'
+# load json file as dictionary, eg. 'gg2013.json'
 def load_data(file_name):
-    data = {}
     with open(file_name, 'r') as f:
         data = json.load(f)
     return data
@@ -269,12 +269,12 @@ def extract_text(tweets):
     return tweet_text
 
 
-# return True if we want to append token
-# return False
+# return True if we want to append token, otherwise False
 def token_filter(token):
     return not (token.is_punct or token.is_space or token.is_stop or len(token.text) <= 3 or '@' in token.text or '#' in token.text)
 
 
+# return True if we want to append entity, otherwise False
 def ent_filter(ent):
     return not (ent.text in custom_stop_words or '@' in ent.text or '#' in ent.text)
 
@@ -288,7 +288,7 @@ def get_awards_by_year(year):
 def find_award(year, tweet):
     official_awards = get_awards_by_year(year)
     best = 0
-    best_match = ""
+    best_match = ''
     temp = 0
     official_tokens = tokenizer.pipe(official_awards)
     for award in official_tokens:
@@ -312,18 +312,26 @@ def find_award(year, tweet):
 
 # can generalize this function to find names with any number of parts, eg. John Doe = 2, A Great Movie = 3
 # then we can use it to find the names of movies as well as people whose names are more than 2 parts
-def find_names(tweet):
+def find_names(tweet, key_words):
     text = tweet.text
-    pattern = r'(?=((?<![A-Za-z])[A-Z][a-z]+ [A-Z][a-z]+))'
+    pattern = r'([A-Z][a-z]+ [A-Z][a-z]+)'
     matches = re.findall(pattern, text)
     names = []
     for match in matches:
-        w1, w2 = match.split(' ')
-        if not (match in custom_stop_words or w1.lower() in key_words or w2.lower() in key_words):
+        if match in custom_stop_words:
+            continue
+        split = match.split(' ')
+        ignore_flag = False
+        for word in split:
+            if word in key_words.keys() and key_words[word] > 100:
+                ignore_flag = True
+                break
+        if not ignore_flag:
             names.append(match)
     return names
 
 
+# serializes answer dict for access in get functions
 def form_answer(year, hosts, awards, nominees, winners, presenters):
     official_awards = get_awards_by_year(year)
     answer = {}
@@ -367,17 +375,24 @@ class WordNode:
         self.count = 0
 
 
-def add_phrase(node, split_phrase):
+def add_phrase(node, split_phrase, key_words):
     if len(split_phrase) == 0:
         node.count += 1
         return
-    next_word = split_phrase[0]
-    if next_word in node.children.keys():
-        add_phrase(node.children[next_word], split_phrase[1:])
+    next_word = split_phrase[0].lower()
+    if nlp.vocab[next_word].is_stop:
+        add_phrase(node, split_phrase[1:], key_words)
     else:
-        new_word_node = WordNode(next_word)
-        node.children[next_word] = new_word_node
-        add_phrase(new_word_node, split_phrase[1:])
+        if next_word in key_words.keys():
+            key_words[next_word] += 1
+        else:
+            key_words[next_word] = 1
+        if next_word in node.children.keys():
+            add_phrase(node.children[next_word], split_phrase[1:], key_words)
+        else:
+            new_word_node = WordNode(next_word)
+            node.children[next_word] = new_word_node
+            add_phrase(new_word_node, split_phrase[1:], key_words)
 
 
 def get_phrases(node, prepend_str, award_names):
@@ -391,13 +406,22 @@ def get_phrases(node, prepend_str, award_names):
         get_phrases(node.children[child], new_prepend_str, award_names)
 
 
-def find_award_names(award_tree, tweet):
+def find_award_names(award_tree, tweet, key_words):
     text = tweet.text
-    pattern = r'(?=((?<![A-Za-z])([Bb]est)( [A-Za-z]+)+))'
+    pattern = r'([Bb]est( [A-Za-z]+)+)'
+    aux_pattern = r'(\-( [A-Za-z]+)+)'
     matches = re.findall(pattern, text)
+    aux_matches = re.findall(aux_pattern, text)
+    aux_words = []
+    for aux_match in aux_matches:
+        aux_split = aux_match[0][2:].split(' ')
+        for word in aux_split:
+            if word.lower() in key_words.keys() and key_words[word.lower()] > 100:
+                aux_words += aux_split
+                break
     for match in matches:
-        split = match[0].split()
-        add_phrase(award_tree, split[1:])
+        split = match[0].split(' ')[1:] + aux_words
+        add_phrase(award_tree, split, key_words)
 
 
 def main():
@@ -415,7 +439,7 @@ def main():
         try:
             data = load_data('processed_gg' + str(year) + '.json')
             data_year = year
-            print('Using data for ' + str(year))
+            # print('Using data for ' + str(year))
             break
         except:
             pass
@@ -425,8 +449,9 @@ def main():
     official_awards = get_awards_by_year(year)
 
     potential_hosts = []
-    award_names = {}
+    key_words = {}
     award_tree = WordNode('best')
+    award_names = {}
     noms_split = {}
     winners_split = {}
     presenters_split = {}
@@ -454,12 +479,13 @@ def main():
     for word in custom_stop_words:
         nlp.vocab[word].is_stop = True
 
-    num_tweets = len(data) # total number of tweets
-    n = 200000 # number of tweets to check
-    skip = int(num_tweets / n) # number of tweets to skip per selection
+    num_tweets = len(data)  # total number of tweets
+    n = 100000  # maximum number of tweets to check
+    skip = int(num_tweets / n)  # number of tweets to skip per selection
     if skip != 0:
-        data = data[0::skip] # select n tweets from data
+        data = data[0::skip]  # select n evenly spaced tweets from data
     tweets = nernlp.pipe(data, batch_size=50, n_threads=3)
+    # check all tweets in one loop for performance
     for tweet in tweets:
         tokens = []
         next_flag = False
@@ -480,57 +506,60 @@ def main():
                 for ent in tweet.ents:
                     if ent_filter(ent):
                         potential_hosts.append(ent.text.lower())
-            # awards checking
+            # find awards
             if token == 'best' and not should_flag:
                 # award_tweets.append(tweet)
-                find_award_names(award_tree, tweet)
+                find_award_names(award_tree, tweet, key_words)
                 # for ent in tweet.ents:
                 #     if len(ent.text) > 4 and ent.text[:4].lower() == 'best':
                 #         award_names.append(ent.text.lower())
                 # break # just for performance while developing
+            # find presenters
             if token == 'present':
                 # presenter_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if a != "":
                     curraward=a
-                    presenters_split[a] += find_names(tweet)
+                    presenters_split[a] += find_names(tweet, key_words)
                 else:
-                    presenters_split['misc'] += find_names(tweet)
+                    presenters_split['misc'] += find_names(tweet, key_words)
                 # break
+            # find winners
             if token == 'win' or token == 'congrats' or token == 'congratulations' and not should_flag:
                 # winner_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if should_flag:
-                    if a != "":
-                        curraward=a
-                        noms_split[a] += nomfilter(tweet)
+                    if a != '':
+                        curraward = a
+                        noms_split[a] += nomfilter(tweet, key_words)
                     else:
-                        noms_split[curraward] += nomfilter(tweet)
+                        noms_split[curraward] += nomfilter(tweet, key_words)
                 else:
-                    if a != "":
-                        curraward=a
-                        winners_split[a] += find_names(tweet)
+                    if a != '':
+                        curraward = a
+                        winners_split[a] += find_names(tweet, key_words)
                     else:
-                        winners_split['misc'] += find_names(tweet)
+                        winners_split['misc'] += find_names(tweet, key_words)
                 # break
-            if token == 'nominate' or token == 'nominee' or token == 'deserve' or token== 'rob' or token=="lose":# or token== 'lost' or token=="lose":
+            # find nominees
+            if token == 'nominate' or token == 'nominee' or token == 'deserve' or token == 'rob' or token == "lose": # or token == 'lost' or token == "lose":
                 # nominee_tweets.append(tweet)
                 a = find_award(year, tweet)
-                if a != "":
-                    curraward=a
-                    lst=nomfilter(tweet)
-                    noms_split[a] +=lst
-                else: noms_split[curraward] += nomfilter(tweet)
-            if token== 'beauty' or token=='pretty':
-                #for ent in tweet.ents:
-                 #   if ent_filter(ent):
-                #potential_bestdressed+=find_names(tweet)#ent.text.lower()
-                #print(tweet)
-                #potential_dressed.append(tweet)
-                for x in find_names(tweet):
+                if a != '':
+                    curraward = a
+                    lst = nomfilter(tweet, key_words)
+                    noms_split[a] += lst
+                else: noms_split[curraward] += nomfilter(tweet, key_words)
+            if token == 'beauty' or token == 'pretty':
+                # for ent in tweet.ents:
+                #     if ent_filter(ent):
+                #         potential_bestdressed += find_names(tweet) # ent.text.lower()
+                # print(tweet)
+                # potential_dressed.append(tweet)
+                for x in find_names(tweet, key_words):
                     bestdress.append(x)
-            if token=='ugly':
-                for x in find_names(tweet):
+            if token == 'ugly':
+                for x in find_names(tweet, key_words):
                     worstdress.append(x)
         if n == 0:
             break
@@ -540,12 +569,14 @@ def main():
     hosts_counts = [potential_hosts.count(host) for host in unique_hosts]
     # possible_hosts = list(zip(unique_hosts, hosts_counts))
 
+    award_tree.count = 0
     get_phrases(award_tree, '', award_names)
     unique_award_names = sorted(set(award_names.keys()), key=lambda x: award_names[x])
     awards_counts = [award_names[award_name] for award_name in unique_award_names]
-    # possible_award_names = list(zip(unique_award_names, awards_counts))
-    # for award in possible_award_names:
-    #     print(award)
+    possible_award_names = list(zip(unique_award_names, awards_counts))
+    for award in possible_award_names:
+        print(award)
+    print(key_words)
 
     sortbestdress = sorted(set(bestdress), key=bestdress.count)
     sortworstdress = sorted(set(worstdress), key=worstdress.count)
@@ -565,7 +596,6 @@ def main():
 
     hosts = find_hosts(unique_hosts, hosts_counts)
     awards = find_awards(unique_award_names, awards_counts)
-    
     winners = find_winners(data_year, unique_winners, winners_counts)
     nominees = find_nominees(data_year, unique_noms, noms_counts, winners)
     presenters = find_presenters(data_year, unique_presenters, presenters_counts)
@@ -581,7 +611,13 @@ def main():
 if __name__ == '__main__':
     main()
 
-# seemingly unused functions saved below
+# unused import statements
+#
+# import string
+# from difflib import SequenceMatcher
+# from pprint import pprint
+#
+# unused functions
 #
 # def parse_text(tweets):
 #     spacy_tweets = tokenizer.pipe(tweets)
@@ -628,3 +664,4 @@ if __name__ == '__main__':
 #             elif ia.search_person(name) != []:
 #                 real_names[name] = 1
 #     return real_names
+#
