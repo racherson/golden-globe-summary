@@ -10,4 +10,4 @@ Install spacy:
     $ python -m spacy download en
     
 Run gg_api_v2.py file
-    - Contains preceremony, main, and get functions
+    - Contains preceremony, main, and get functions. Only one year can be run at a time. If there are multiple gg"year".json files in the folder it will run the earliest year. 
