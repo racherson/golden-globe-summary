@@ -89,8 +89,8 @@ def find_hosts(unique_hosts, counts):
 def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
         of this function or what it returns.'''
-    answer = load_data('answer2013.json')
-    # answer = load_data('answer' + str(year) + '.json')
+    #answer = load_data('answer2013.json')
+    answer = load_data('answer' + str(year) + '.json')
     hosts = answer['hosts']
     return hosts
 
@@ -106,8 +106,8 @@ def find_awards(unique_awards, counts):
 def get_awards(year):
     '''Awards is a list of strings. Do NOT change the name
     of this function or what it returns.'''
-    answer = load_data('answer2013.json')
-    # answer = load_data('answer' + str(year) + '.json')
+    #answer = load_data('answer2013.json')
+    answer = load_data('answer' + str(year) + '.json')
     awards = answer['awards']
     return awards
 
@@ -165,8 +165,8 @@ def get_nominees(year):
     '''Nominees is dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change
     the name of this function or what it returns.'''
-    answer = load_data('answer2013.json')
-    # answer = load_data('answer' + str(year) + '.json')
+    #answer = load_data('answer2013.json')
+    answer = load_data('answer' + str(year) + '.json')
     award_data = answer['award_data']
     nominees = {}
     for award in award_data.keys():
@@ -206,8 +206,8 @@ def get_winner(year):
     '''Winners is a dictionary with the hard coded award
     names as keys, and each entry containing a single string.
     Do NOT change the name of this function or what it returns.'''
-    answer = load_data('answer2013.json')
-    # answer = load_data('answer' + str(year) + '.json')
+    #answer = load_data('answer2013.json')
+    answer = load_data('answer' + str(year) + '.json')
     award_data = answer['award_data']
     winners = {}
     for award in award_data.keys():
@@ -242,8 +242,8 @@ def get_presenters(year):
     '''Presenters is a dictionary with the hard coded award
     names as keys, and each entry a list of strings. Do NOT change the
     name of this function or what it returns.'''
-    answer = load_data('answer2013.json')
-    # answer = load_data('answer' + str(year) + '.json')
+    #answer = load_data('answer2013.json')
+    answer = load_data('answer' + str(year) + '.json')
     award_data = answer['award_data']
     presenters = {}
     for award in award_data.keys():
