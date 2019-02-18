@@ -41,6 +41,27 @@ def get_first_and_last(hosts, index):
         count += 1
     return name
 
+def find_dressed(dressed, tweet, key_words):
+    posdress=dressed['best']
+    negdress=dressed['worst']
+    #dressed={}
+    names=find_names(tweet,key_words)
+    if len(names)>0:
+        for token in tweet:
+            word=token.text.lower()
+                #print(word)
+            if word=='ugly' or word=='ew' or word=='bad' or word=='not' or word=='worst':
+                for pers in names:
+                    negdress.append(pers)
+                break
+            if word=='beauty' or word=='pretty' or word=='gorgeous' or word=='best':
+                #print('pos')
+                for pers in names:
+                    posdress.append(pers)
+                break
+    dressed['best']=posdress
+    dressed['worst']=negdress
+    return dressed
 
 def find_hosts(unique_hosts, counts):
     hosts = []
@@ -466,6 +487,9 @@ def main():
     possible_winners = {}
     bestdress=[]
     worstdress=[]
+    dressed=dict()
+    dressed['worst']=list()
+    dressed['best']=list()
     curraward='misc'
 
     for award in official_awards:
@@ -550,17 +574,8 @@ def main():
                     lst = nomfilter(tweet, key_words)
                     noms_split[a] += lst
                 else: noms_split[curraward] += nomfilter(tweet, key_words)
-            if token == 'beauty' or token == 'pretty':
-                # for ent in tweet.ents:
-                #     if ent_filter(ent):
-                #         potential_bestdressed += find_names(tweet) # ent.text.lower()
-                # print(tweet)
-                # potential_dressed.append(tweet)
-                for x in find_names(tweet, key_words):
-                    bestdress.append(x)
-            if token == 'ugly':
-                for x in find_names(tweet, key_words):
-                    worstdress.append(x)
+            if token=='beauty' or token=='pretty' or token=='dress' or token=='ugly':
+                dressed=find_dressed(dressed, tweet,key_words)
         if n == 0:
             break
         n -= 1
@@ -579,10 +594,18 @@ def main():
     print(key_words)
     print(len(key_words))
 
-    sortbestdress = sorted(set(bestdress), key=bestdress.count)
-    sortworstdress = sorted(set(worstdress), key=worstdress.count)
-    print(sortbestdress[-1])
-    print(sortworstdress[-1])
+    lstbestdress=sorted(set(dressed['best']), key=dressed['best'].count)
+    lstworstdress=sorted(set(dressed['worst']), key=dressed['worst'].count)
+    contraversaldressed='no one'
+    diff=100
+    for i in range (1,len(lstbestdress)):
+        for j in range (1, 10):
+            if lstbestdress[-i]==lstworstdress[-j] and diff>abs(i-j):
+                diff=abs(i-j)
+                contraversaldressed=lstbestdress[-i]
+    bestdressed=lstbestdress[-1]
+    worstdressed=lstworstdress[-1]
+    
 
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
