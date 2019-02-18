@@ -8,3 +8,6 @@ Install spacy:
     $ pip install -U spacy
 
     $ python -m spacy download en
+    
+Run gg_api_v2.py file
+    Contains preceremony, main, and get functions
