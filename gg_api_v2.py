@@ -6,6 +6,7 @@ import spacy
 import sys
 import time
 from spacy.tokenizer import Tokenizer
+from difflib import SequenceMatcher
 # unused import functions
 # import string
 # from difflib import SequenceMatcher
@@ -95,20 +96,50 @@ def get_awards(year):
     return awards
 
 
-def find_nominees(year, unique_nominees, counts):
+def find_nominees(year, unique_nominees, counts,winners):
+    
     official_awards = get_awards_by_year(year)
     nominees = {}
-    # get top 5 nominees
+    print('start')
+    print(counts)
+    #print(unique_nominees)
+    print('end')
+    
     for award in official_awards:
+        lst=list()
+        mentions= counts[award]
         award_noms = unique_nominees[award]
-        if len(award_noms) == 0:
-            nominees[award] = []
-        elif len(award_noms) < 5:
-            nominees[award] = award_noms[::-1]
+        if len(mentions)>1:
+            if (mentions[-1]/2)>=mentions[-2]:# and mentions[-1]>4:
+                cutoff=mentions[-2]/2
+            else: cutoff=mentions[-1]/2
+            #if cutoff<=1:
+            #    cutoff=2
+            print(award)
+            print('cutoff')
+            print(cutoff)
+            for i in range(1,len(mentions)):
+                simflag=False
+                if mentions[-i] >= cutoff:
+                    print('hi')
+                    curr=award_noms[-i]
+                    split_name = curr.split(' ')                        
+                    if not award_noms[-i]== winners[award]:                            
+                        for x in lst:
+                            if SequenceMatcher(None, x, curr).ratio()>=.8:
+                                simflag=True
+                            xsplit=x.split(' ')
+                            for word in xsplit:
+                                for newword in split_name:
+                                    if SequenceMatcher(None, newword, word).ratio()>=.85:
+                                        simflag=True
+                        if simflag==False:
+                            lst.append(award_noms[-i])
+                else: break
         else:
-            nominees[award] = award_noms[-5:][::-1]
+            lst.append(award_noms[-1])
+        nominees[award]=lst
     return nominees
-
 
 def get_nominees(year):
     '''Nominees is dictionary with the hard coded award
@@ -122,6 +153,19 @@ def get_nominees(year):
         nominees[award] = award_data[award][0]
     return nominees
 
+def nomfilter(tweet):
+    lst=list()
+    for ent in tweet.ents:
+        ignoreflag=False
+        txt=ent.text
+        txt=re.sub(r'[^a-zA-Z ]+', '', txt)
+        for x in txt.split(' '):
+            if (x in custom_stop_words or x.lower() in key_words):
+                ignoreflag=True
+        if ignoreflag==False and not (txt =='' or txt==' '):
+            stri=txt.lower()
+            lst.append(stri)
+    return lst
 
 def find_winners(year, unique_winners, counts):
     official_awards = get_awards_by_year(year)
@@ -395,6 +439,9 @@ def main():
     possible_presenters = {}
     possible_noms = {}
     possible_winners = {}
+    bestdress=[]
+    worstdress=[]
+    curraward='misc'
 
     for award in official_awards:
         noms_split[award] = []
@@ -445,6 +492,7 @@ def main():
                 # presenter_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if a != "":
+                    curraward=a
                     presenters_split[a] += find_names(tweet)
                 else:
                     presenters_split['misc'] += find_names(tweet)
@@ -452,19 +500,38 @@ def main():
             if token == 'win' or token == 'congrats' or token == 'congratulations' and not should_flag:
                 # winner_tweets.append(tweet)
                 a = find_award(year, tweet)
-                if a != "":
-                    winners_split[a] += find_names(tweet)
+                if should_flag:
+                    if a != "":
+                        curraward=a
+                        noms_split[a] += nomfilter(tweet)
+                    else:
+                        noms_split[curraward] += nomfilter(tweet)
                 else:
-                    winners_split['misc'] += find_names(tweet)
+                    if a != "":
+                        curraward=a
+                        winners_split[a] += find_names(tweet)
+                    else:
+                        winners_split['misc'] += find_names(tweet)
                 # break
-            if token == 'nominate' or token == 'nominee':
+            if token == 'nominate' or token == 'nominee' or token == 'deserve' or token== 'rob' or token=="lose":# or token== 'lost' or token=="lose":
                 # nominee_tweets.append(tweet)
                 a = find_award(year, tweet)
                 if a != "":
-                    noms_split[a] += find_names(tweet)
-                else:
-                    noms_split['misc'] += find_names(tweet)
-                # break
+                    curraward=a
+                    lst=nomfilter(tweet)
+                    noms_split[a] +=lst
+                else: noms_split[curraward] += nomfilter(tweet)
+            if token== 'beauty' or token=='pretty':
+                #for ent in tweet.ents:
+                 #   if ent_filter(ent):
+                #potential_bestdressed+=find_names(tweet)#ent.text.lower()
+                #print(tweet)
+                #potential_dressed.append(tweet)
+                for x in find_names(tweet):
+                    bestdress.append(x)
+            if token=='ugly':
+                for x in find_names(tweet):
+                    worstdress.append(x)
         if n == 0:
             break
         n -= 1
@@ -480,6 +547,11 @@ def main():
     # for award in possible_award_names:
     #     print(award)
 
+    sortbestdress = sorted(set(bestdress), key=bestdress.count)
+    sortworstdress = sorted(set(worstdress), key=worstdress.count)
+    print(sortbestdress[-1])
+    print(sortworstdress[-1])
+
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)
         unique_winners[award] = sorted(set(winners_split[award]), key=winners_split[award].count)
@@ -493,8 +565,9 @@ def main():
 
     hosts = find_hosts(unique_hosts, hosts_counts)
     awards = find_awards(unique_award_names, awards_counts)
-    nominees = find_nominees(data_year, unique_noms, noms_counts)
+    
     winners = find_winners(data_year, unique_winners, winners_counts)
+    nominees = find_nominees(data_year, unique_noms, noms_counts, winners)
     presenters = find_presenters(data_year, unique_presenters, presenters_counts)
 
     print ('Calling form_answer...')
@@ -555,4 +628,3 @@ if __name__ == '__main__':
 #             elif ia.search_person(name) != []:
 #                 real_names[name] = 1
 #     return real_names
-#
