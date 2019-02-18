@@ -1,14 +1,16 @@
-gg2013.json
-gg2015.json
-filtered_2013.json
-filtered_2015.json
-processed_gg2013.json
-processed_gg2015.json
+# system files
+__pycache__/
 .idea/
 .DS_Store
-__pycache__/
+
+# data files
+gg2013.json
+gg2015.json
+processed_gg2013.json
+processed_gg2015.json
 answer2013.json
 answer2015.json
+
+# jos local files
 gg_awards.py
 gg_api_v2.py
-gg_api_v3.py

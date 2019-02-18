@@ -1,0 +1,135 @@
+Hosts: amy poehler; tina fey; 
+
+Award: cecil b. demille award
+Presenters: Kristen Wiig; Bill Hader; 
+Nominees: JK Simmons; Matt Bomer; Julianne Moore; Boyhood; GoldenGIobes; GeorgeClooney; Viola Davis; Kevin Spacey; Jeffrey Tambor; 
+Winner: George Clooney
+
+Award: best motion picture - drama
+Presenters: Bill Hader; 
+Nominees: Kevin Spacey; Affair; 
+Winner: Gina Rodriguez
+
+Award: best performance by an actress in a motion picture - drama
+Presenters: Kristen Wiig; 
+Nominees: Reuters; LOS ANGELES; Amal Clooney; Kevin Spacey; 
+Winner: Amy Adams
+
+Award: best performance by an actor in a motion picture - drama
+Presenters: Gifting Suite; 
+Nominees: Matt Bomer; RedCarpet; JK Simmons; 
+Winner: Kevin Spacey
+
+Award: best motion picture - comedy or musical
+Presenters: Carpet Let; Jim Parsons; 
+Nominees: Jane Fonda; Owen Wilson; Lana; Downton Abbey; The Grand Budapest Hotel; Kate Hudson; Murray; Matt Bomers; Fargo; Netflix; Transparent; UCLA; Emmys; 
+Winner: News Amazon
+
+Award: best performance by an actress in a motion picture - comedy or musical
+Presenters: 
+Nominees: Jane the Virgin; Transparent; BigEyes; Gina Rodriguez; Tusk; GoldenGIobes; William H Macy; ComedyMusical; Meryl; Polaroid; GlobeAwards; Andy Warhol; Odd; RedCarpet; MIZZ LANGE; Jesus; WWE; Lorde; Jillian Bell; Lana; Jessica Lange; GoldenGlobeAwards; Galavant; Good; VINCENT; Gregory Rozakis; NiceMrClooney; Classic; Selma; Kate Hudson; Jared Leto; GoldenGlobesonColours; Melissa Mccarthy; Piper Chapman; 
+Winner: Amy Adams
+
+Award: best performance by an actor in a motion picture - comedy or musical
+Presenters: Jane Fonda; Lily Tomlin; 
+Nominees: American; GoldenGIobes; DrinkingGame; Movie; Bill Murray; FDR; Batman; Voldemort; Black List; 
+Winner: Jeffrey Tambor
+
+Award: best animated feature film
+Presenters: Naiomi Watts; Selma Hayek; 
+Nominees: Lego; LEGO Movie; 
+Winner: Richard Linklater
+
+Award: best foreign language film
+Presenters: 
+Nominees: Gett; Israeli; Leviathan; Hollywood; GoldenGIobes; Jessica Lange; Russia; 
+Winner: Dendy Direct
+
+Award: best performance by an actress in a supporting role in a motion picture
+Presenters: Jennifer Aniston; 
+Nominees: GoldenGIobes; JK Simmons; Amy Adams; Yemi Alade Tries New Hairstyle; Matt Bomer; Boyhood; Bill Murray; Kevin Spacey; Gina Rodriguez; Patricia Arquette; Birdman; Transparent; CW; DowntonAbbey; Whiplash; 
+Winner: George Clooney
+
+Award: best performance by an actor in a supporting role in a motion picture
+Presenters: Jennifer Aniston; Benedict Cumberbatch; 
+Nominees: JK Simmons; Alan Cumming; Whiplash; WhiplashMovie; Access; HouseofCards; HBO; 
+Winner: Kevin Spacey
+
+Award: best director - motion picture
+Presenters: Harrison Ford; Han Solo; 
+Nominees: Boyhood; Linklater; Viola Davis; 
+Winner: Richard Linklater
+
+Award: best screenplay - motion picture
+Presenters: Bill Hader; 
+Nominees: Birdman; Boyhood; Bill Hader; Nightcrawler; The Skeleton Twins; 
+Winner: Alejandro Gonzalez
+
+Award: best original score - motion picture
+Presenters: 
+Nominees: GIRL; WHIPLASH; BIRDMAN; Birdman; Hans; 
+Winner: Johann Johannsson
+
+Award: best original song - motion picture
+Presenters: Ruby Dee; 
+Nominees: Common; Glory; Lorde; Lana; 
+Winner: John Legend
+
+Award: best television series - drama
+Presenters: Beverly Hil; 
+Nominees: Affair; Kevin Spacey; 
+Winner: Hagai Levi
+
+Award: best performance by an actress in a television series - drama
+Presenters: Anna Ferris; Chris Pratt; 
+Nominees: Viola Davis; TheAffair; Julianna Marguiles; Firth; The Good Wife; UW; Jessica Lange; GameOfThrones; Homeland; Amazon; FURIOUS; RuthWilson; Claire Danes; Nooooo; 
+Winner: Ruth Wilson
+
+Award: best performance by an actor in a television series - drama
+Presenters: 
+Nominees: House of Cards; 
+Winner: Kevin Spacey
+
+Award: best television series - comedy or musical
+Presenters: 
+Nominees: Silicon Valley; Jane The Virgin; LOSE; Girls or Orange; Amy Adams; FALSE; LEGO; Birdman; Gina; Kevin Hart; Salma Hayaks; Jamie Dornan; MiniseriesTV Movie; 
+Winner: Los Angeles
+
+Award: best performance by an actress in a television series - comedy or musical
+Presenters: Los Angeles; 
+Nominees: Julia Louis Dreyfus; Lena Dunham; Melissa McCarthy; Edie Falco; GoldenGlobeAwards; Parks; Transparent; Elaine; Taylor Schilling; JaneTheVirgin; MusicalComedy; 
+Winner: Gina Rodriguez
+
+Award: best performance by an actor in a television series - comedy or musical
+Presenters: 
+Nominees: Matt Bomer; ONE; Alan Cumming; AMY DESERVE; Louie; Lana; Kristen Wiig; MiniSeries; The Normal Heart; Mini; MartinFreeman; GoldenGIobes; MarkRuffalo; LouisCK; 
+Winner: Jeffrey Tambor
+
+Award: best mini-series or motion picture made for television
+Presenters: Jeremy Renner; 
+Nominees: Kevin Spacey; Boyhood; TheNormalHeart; Matt Bomer; House of Cards; JK Simmons; Amy Adams; Patricia Arquette; DowntonAbbey; Benedict Cumberbatch; 
+Winner: Gina Rodriguez
+
+Award: best performance by an actress in a mini-series or motion picture made for television
+Presenters: Witnessing Prince; Disses Katie; 
+Nominees: Matt Bomer; Rosamund Pike; Gina Rodriguez; Oscar; Affair; Ruth Wilson; Robin Wright; Lego; The Normal Heart; Fincher; 
+Winner: Amy Adams
+
+Award: best performance by an actor in a mini-series or motion picture made for television
+Presenters: 
+Nominees: JK Simmons; Sunday; David Oyelowo; TheBlacklist; KevinSpacey; 
+Winner: Kevin Spacey
+
+Award: best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
+Presenters: John Legend; 
+Nominees: GoldenGIobes; Patricia Arquette; Boyhood; JK Simmons; 
+Winner: Amy Adams
+
+Award: best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
+Presenters: Jennifer Aniston; 
+Nominees: JK Simmons; Whiplash; Kevin Spacey; 
+Winner: Matt Bomer
+
+Best Dressed: Bill Cosby
+Worst Dressed: Keira Knightley
+Controversially Dressed: Amy Adams

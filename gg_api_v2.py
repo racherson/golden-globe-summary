@@ -421,6 +421,8 @@ def print_answer(year, answer):
         file.write('\nNominees: ')
         for name in nominees:
             file.write(name + '; ')
+        if not winner:
+            winner = 'N/A'
         file.write('\nWinner: ' + winner + '\n\n')
     file.close()
     print('Hosts:\n')
@@ -507,7 +509,7 @@ def main():
     will run this function. Or, in the interpreter, import gg_api
     and then run gg_api.main(). This is the second thing the TA will
     run when grading. Do NOT change the name of this function or what it returns.'''
-    pre_ceremony()
+    # pre_ceremony()
     print('Starting main now...')
     start_time = time.time()
 
@@ -669,6 +671,9 @@ def main():
                     contraversaldressed=lstbestdress[-i]
         bestdressed = lstbestdress[-1]
         worstdressed = lstworstdress[-1]
+    else:
+        bestdressed = 'no one'
+        worstdressed = 'no one'
 
     for award in official_awards:
         unique_noms[award] = sorted(set(noms_split[award]), key=noms_split[award].count)

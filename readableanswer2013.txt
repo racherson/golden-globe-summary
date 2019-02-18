@@ -1,132 +1,135 @@
-Hosts: amy poehler; 
+Hosts: amy poehler; tina fey; 
 
 Award: cecil b. demille award
-Presenters: Robert Downey; Jodie Foster; 
-Nominees: jodiefoster; half; paranorman; the new season; jon hamm; tonight;  talking; 
-Winner: Lena Dunham
+Presenters: Robert Downey; 
+Nominees: Christoph Waltz; Amy Poehler; Anne Hathaway; Bryan Cranston; Jessica Lange; Django; Claire Danes; 
+Winner: Jodie Foster
 
 Award: best motion picture - drama
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Bill Clinton; 
+Nominees: CNN; Lincoln; 
+Winner: Jodie Foster
 
 Award: best performance by an actress in a motion picture - drama
 Presenters: Bill Clinton; 
-Nominees: claire danes; first; django unchained; 
-Winner: Claire Danes
+Nominees: Oscar; Adele; Mel Gibson; Daniel DayLewis; Ben Affleck; 
+Winner: Jodie Foster
 
 Award: best performance by an actor in a motion picture - drama
-Presenters: 
-Nominees: 
-Winner: And Al
+Presenters: Arnold Schwazsafnahgj; Sly Stallone; 
+Nominees: Lincoln; Hugh Jackman; Daniel Day Lewis; Ben Affleck; 
+Winner: Daniel Day
 
 Award: best motion picture - comedy or musical
-Presenters: 
-Nominees: only two; 
-Winner: Don Cheadle
+Presenters: Dustin Hoffman; 
+Nominees: Amy; Costner; Modern Family; Hamm; Tina; Will Ferrell; Ben Affleck; Lewis; EasyChoice; Cumberbatch; Oscar; Les Mis; SLP; FUNNY; ChristophWaltz; WIR; Something Hollywood; NOOOOOOOOOOOOO; Frankenweenie; Jeff Daniels; IRRELEVANT; Leslie Knope; PS; Big Bang Theory; Dexter; MCH; SMASH; Love; LeoDiCaprio; Weinstein; Louis CK; Julianne Moore; Miserables; ParaNorman; Valentines Day; Taylor Swift; American; Anne Hathaway; GoldenGlobesltme; AussieAussieAussie; Wiig YES; Argo; Community; Django; Bill Clinton; Jodie Foster; Lena Dunham; Kristen amp; NotSorry; 
+Winner: Les Miserables
 
 Award: best performance by an actress in a motion picture - comedy or musical
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Kristen Wiig; 
+Nominees: AHH; Les Mis; Amy Poehler; LENA; Ted; Modern Family; Shenanigans; FIVE; Meryl Streep; Watched Jodies; AList Politically Correct; Ngl; Hollywood; Mel Gibson; Jake; Hugh Jackman; Max Greenfield; Silver Lining Playbook; JL; Jennifer Lawerence; Mandy; SUCKED; 
+Winner: Jennifer Lawrence
 
 Award: best performance by an actor in a motion picture - comedy or musical
 Presenters: 
-Nominees: 
-Winner: None
+Nominees: Affleck; Huge Jackman; Django; 
+Winner: Hugh Jackman
 
 Award: best animated feature film
-Presenters: 
-Nominees: 
-Winner: None
-
-Award: best foreign language film
-Presenters: 
-Nominees: 
-Winner: None
-
-Award: best performance by an actress in a supporting role in a motion picture
-Presenters: 
-Nominees: hmmmmm; ben affleck; parksandrec; 
+Presenters: Bill Clinton; 
+Nominees: Congrats Ben; Zero; Oscars; Kevin Cosner; Benedict Cumberbatch; SERIOUSLY; Frankenweenie; Clinton; GeorgeClooney ampall; ParaNorman; Jamie Foxx; Dark Thirty; AskGlobes; Judi Dench; Lincoln; Argo; Homeland; Ralph; Jessica Chastain; 
 Winner: Ben Affleck
 
+Award: best foreign language film
+Presenters: Sylvester Stallone; 
+Nominees: Amour; Jodie Fosters; Bryan Cranston; TaylorSwift; Sons of Anarchy; Hollywood; Zero Necks; Anne; 
+Winner: Michael Haneke
+
+Award: best performance by an actress in a supporting role in a motion picture
+Presenters: Bill Clinton; 
+Nominees: Adele; Taylor Swift; Anne Hathaway; Ben Affleck; Lincoln; 
+Winner: Jodie Foster
+
 Award: best performance by an actor in a supporting role in a motion picture
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Sorry Meryl; Bradley Cooper; 
+Nominees: Sophia Vergara; Christopher Waltz; Leonardo DiCaprio; Amy; Django Unchained; Benedict Cumberbatch; Damien Lewis; Mandy Patinkin; Tommy Lee Jones; US; Tina; Jon Hamm; TeleprompterFails; Inglorious Basterds; Harris; Woohoo; Claire Danes; 
+Winner: Christoph Waltz
 
 Award: best director - motion picture
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Halle Berry; 
+Nominees: Argo; BenAffleck; Ben; 
+Winner: Ben Affleck
 
 Award: best screenplay - motion picture
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Amanda Seyfried; Robert Pattinson; 
+Nominees: Django Unchained; 
+Winner: Quentin Tarantino
 
 Award: best original score - motion picture
-Presenters: 
-Nominees: 
-Winner: Canadian Mychael
+Presenters: Jennifer Lopez; Jason Statham; 
+Nominees: John Williams; Emmys; Sofia Vergara Pepsi; Adele; Cloud Atlas; CLOUD ATLAS; Django; Michael Danna; Skyfall; Christoph Waltz; 
+Winner: Mychael Danna
 
 Award: best original song - motion picture
-Presenters: 
-Nominees: 
+Presenters: Kanye West; 
+Nominees: Adele; Taylor Swift; Skyfall; 
 Winner: Maggie Smith
 
 Award: best television series - drama
 Presenters: 
-Nominees: 
-Winner: Congrats Game
+Nominees: Breaking Bad; Homeland; 
+Winner: Game Change
 
 Award: best performance by an actress in a television series - drama
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Lea Michele; Nathan Fillion; 
+Nominees: Homeland; Nathan Fillion; Lea Michele; Paul Rudd; 
+Winner: Claire Danes
 
 Award: best performance by an actor in a television series - drama
 Presenters: 
-Nominees: 
-Winner: Kevin Costner
+Nominees: Breaking Bad; Bryan Cranston; Benedict; Damian; Homeland; Damien Lewis; 
+Winner: Damian Lewis
 
 Award: best television series - comedy or musical
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Jimmy Fallon; Jay Leno; 
+Nominees: Jack Black; GIRLS; Hugh Jackman; McCoys; Jethro Very; Lena Dunham; FAMILY; Bradley Cooper; 
+Winner: Game Change
 
 Award: best performance by an actress in a television series - comedy or musical
 Presenters: 
-Nominees: 
-Winner: None
+Nominees: Lena; 
+Winner: Lena Dunham
 
 Award: best performance by an actor in a television series - comedy or musical
 Presenters: 
-Nominees: 
-Winner: None
+Nominees: Jim Parsons; Homeland; MIA; Mandy; Louis CK; 
+Winner: Don Cheadle
 
 Award: best mini-series or motion picture made for television
-Presenters: 
-Nominees: taylor; lol; ben affleck; turbo; 
-Winner: Silver Linings
+Presenters: Bill Clinton; 
+Nominees: Ben Affleck; Oscar; Adele; 
+Winner: Anne Hathaway
 
 Award: best performance by an actress in a mini-series or motion picture made for television
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Bill Clinton; Mitt Romney; 
+Nominees: Oscar; 
+Winner: Ben Affleck
 
 Award: best performance by an actor in a mini-series or motion picture made for television
 Presenters: 
-Nominees: 
+Nominees: Jessica Lange; Affleck; Bryan Cranston; Les Mis; Jones; Jason Isaacs; Gigli; ALIAS; ANDREW LINCOLN; Taylor Swift; Costner; Homeland; Si Robertson; Silver Lining Playbook; BOOOOOOOOOOOOOOOO; 
 Winner: Hugh Jackman
 
 Award: best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
-Presenters: 
-Nominees: jodie fosters; gamechange; like min or; amy; trader joes; anne hathaway; ben afflack; tina; pb; 
-Winner: Streep Joke
+Presenters: Kerry Washington; Epic Grumpy; 
+Nominees: Ben Affleck; 
+Winner: Anne Hathaway
 
 Award: best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
-Presenters: 
-Nominees: 
-Winner: None
+Presenters: Bradley Cooper; Kate Hudson; 
+Nominees: Django Unchained; 
+Winner: Christoph Waltz
 
+Best Dressed: Kate Hudson
+Worst Dressed: Halle Berry
+Controversially Dressed: Megan Fox
